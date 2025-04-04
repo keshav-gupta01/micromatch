@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
+import { useEffect } from 'react';
+
+
+
 const additionalStyles = `
   
 `;
 
 const SignupPage = () => {
+  useEffect(() => {
+    document.title = "Sign Up - MicroMatch";
+  }, []);
+
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',

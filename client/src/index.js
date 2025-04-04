@@ -7,7 +7,7 @@ import App from './App';
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App /> {/* <-- Changed from Home to App */}
+      <App /> 
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

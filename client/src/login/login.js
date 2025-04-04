@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 
 const additionalStyles = `
 `;
 
 const LoginPage = () => {
+
+    useEffect(() => {
+        document.title = "Login - MicroMatch";
+      }, []);
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
