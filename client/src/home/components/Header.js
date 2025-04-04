@@ -1,18 +1,19 @@
-// import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
+  const navigate = useNavigate();
+
   return (
     <header>
       <video src={`${process.env.PUBLIC_URL}/video.mp4`} loop autoPlay muted />
 
       <h1>Welcome to MicroMatch</h1>
       <div className="row">
-        <button className="btn" style={{ cursor: "pointer" }}>
+        <button className="btn" style={{ cursor: "pointer" }} onClick={() => navigate("/signup")}>
           Sign Up
         </button>
 
-        <button className="btn" style={{ cursor: "pointer" }} >
+        <button className="btn" style={{ cursor: "pointer" }} onClick={() => navigate("/login")}>
           Log in
         </button>
       </div>
@@ -21,4 +22,5 @@ function Header() {
     </header>
   );
 }
+
 export default Header;

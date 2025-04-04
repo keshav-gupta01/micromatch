@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import './index.css';
-import Home from './home/home.js';
+import App from './App';
 
-  ReactDOM.render(
+ReactDOM.render(
   <React.StrictMode>
-    <Home />
+    <BrowserRouter>
+      <App /> {/* <-- Changed from Home to App */}
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
-

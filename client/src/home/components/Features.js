@@ -1,7 +1,7 @@
 import Card from "./Card";
-function Services() {
+function Features() {
   return (
-    <div className="container services">
+    <div className="container features">
         <h2 className="main-title text-center">FEATURES</h2>
         <div className="card-cover">
             <div className="col-md-12">
@@ -21,4 +21,4 @@ function Services() {
     </div>
   );
 }
-export default Services;
+export default Features;
