@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import './login.css';
+
+
+
+
 
 const additionalStyles = `
 `;
@@ -80,69 +85,77 @@ const LoginPage = () => {
   };
 
   return (
-    <>
-      <video src={`${process.env.PUBLIC_URL}/video.mp4`} loop autoPlay muted />
-      <style>{additionalStyles}</style>
-      <div className="signup-container">
-        <div className="signup-card">
-          {isSubmitted ? (
-            <div className="success-message">
-              <div className="success-icon">✓</div>
-              <h2 className="card-title">Login Successful!</h2>
-              <p className="card-text">Redirecting to your dashboard...</p>
-              <button className="btn" onClick={() => window.location.href = '#'}>
-                Continue
-              </button>
+    <div className="signup-container">
+      <div className="signup-inner animate-slide-in">
+      <img src="/assets/logo.svg" alt="Logo" className="logo" />
+        {isSubmitted ? (
+          <div className="success-message">
+            <div className="success-icon">✓</div>
+            <h2 className="card-title">Login Successful!</h2>
+            <p className="card-text">Redirecting to your dashboard...</p>
+            <button className="signup-button" onClick={() => window.location.href = "/dashboard"}>
+              Continue
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="signup-header">
+              <h2>Welcome Back!</h2>
+              <p>Please log in to your account</p>
             </div>
-          ) : (
-            <>
-              <div className="signup-header">
-                <h2>Welcome Back!</h2>
-                <p>Please log in to your account</p>
-              </div>
-              <div className="signup-form">
-                <form onSubmit={handleSubmit}>
-                  <div className="input-group">
-                    <input
-                      type="email"
-                      className="signup-input"
-                      name="email"
-                      placeholder="Email Address"
-                      value={formData.email}
-                      onChange={handleChange}
-                    />
-                    {errors.email && <span className="error-text">{errors.email}</span>}
-                  </div>
 
-                  <div className="input-group">
-                    <input
-                      type="password"
-                      className="signup-input"
-                      name="password"
-                      placeholder="Password"
-                      value={formData.password}
-                      onChange={handleChange}
-                    />
-                    {errors.password && <span className="error-text">{errors.password}</span>}
-                  </div>
-
-                  {errors.server && <span className="error-text">{errors.server}</span>}
-
-                  <button type="submit" className="signup-button">
-                    Log In
-                  </button>
-                </form>
-
-                <div className="login-link">
-                  Don't have an account? <a href="/signup">Sign Up</a>
+            <div className="signup-form">
+              <form onSubmit={handleSubmit} className="form">
+                <div className="input-group">
+                  <input
+                    type="email"
+                    className="signup-input"
+                    name="email"
+                    placeholder="Email Address"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                  {errors.email && <span className="error-text">{errors.email}</span>}
                 </div>
+
+                <div className="input-group">
+                  <input
+                    type="password"
+                    className="signup-input"
+                    name="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  {errors.password && <span className="error-text">{errors.password}</span>}
+                </div>
+
+                {errors.server && <span className="error-text">{errors.server}</span>}
+
+                <button type="submit" className="signup-button">
+                  Log In
+                </button>
+              </form>
+
+              <div className="login-link">
+                Don&apos;t have an account? <a href="/signup">Sign Up</a>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
-    </>
+
+      <div className="signup-illustration">
+          <div className="monitor-wrapper">
+            <img src="/assets/monitor.svg" alt="monitor" className="monitor" />
+            <img src="/assets/dash.svg" alt="dash" className="monitor-icons dash" />
+            <img src="/assets/miota.svg" alt="iota" className="monitor-icons iota" />
+            <img src="/assets/eth.svg" alt="eth" className="monitor-icons eth" />
+          </div>
+        </div>
+    </div>
   );
+
 };
 
 export default LoginPage;

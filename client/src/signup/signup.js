@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import './signup.css';
 
 const additionalStyles = `
   
@@ -87,92 +88,92 @@ const SignupPage = () => {
   
   return (
     <>
-      <video src={`${process.env.PUBLIC_URL}/video.mp4`} loop autoPlay muted />
-      <style>{additionalStyles}</style>
-      <div className="signup-container">
-        <div className="signup-card">
+      <div className="signup-container white-bg">
+        <div className="signup-inner">
+          <img src="/assets/logo.svg" alt="Logo" className="logo" />
           {isSubmitted ? (
             <div className="success-message">
               <div className="success-icon">✓</div>
               <h2 className="card-title">Sign Up Successful!</h2>
               <p className="card-text">Your account has been created successfully.</p>
-              <button className="btn" onClick={() => window.location.href = '/dashboard'}>
+              <button className="signup-button" onClick={() => window.location.href = '/dashboard'}>
                 Continue to Dashboard
               </button>
             </div>
           ) : (
             <>
-              <div className="signup-header">
-                <h2>Create Account</h2>
-              </div>
-              <div className="signup-form">
-                <form onSubmit={handleSubmit}>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="signup-input"
-                      name="fullName"
-                      placeholder="Full Name"
-                      value={formData.fullName}
-                      onChange={handleChange}
-                    />
-                    {errors.fullName && <span className="error-text">{errors.fullName}</span>}
-                  </div>
-
-                  <div className="input-group">
-                    <input
-                      type="email"
-                      className="signup-input"
-                      name="email"
-                      placeholder="Email Address"
-                      value={formData.email}
-                      onChange={handleChange}
-                    />
-                    {errors.email && <span className="error-text">{errors.email}</span>}
-                  </div>
-
-                  <div className="input-group">
-                    <input
-                      type="password"
-                      className="signup-input"
-                      name="password"
-                      placeholder="Password"
-                      value={formData.password}
-                      onChange={handleChange}
-                    />
-                    {errors.password && <span className="error-text">{errors.password}</span>}
-                  </div>
-
-                  <div className="input-group">
-                    <input
-                      type="password"
-                      className="signup-input"
-                      name="confirmPassword"
-                      placeholder="Confirm Password"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                    />
-                    {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
-                  </div>
-
-                  {errors.server && <div className="error-text">{errors.server}</div>}
-
-                  <button type="submit" className="signup-button">
-                    Sign Up
-                  </button>
-                </form>
-
-                <div className="login-link">
-                  Already have an account? <Link to="/login">Log In</Link>
+              <h1 className="form-title">Create Account</h1>
+              <p className="subtitle">Join the revolution</p>
+              <form onSubmit={handleSubmit} className="form">
+                <div className="input-group">
+                  <input
+                    type="text"
+                    name="fullName"
+                    placeholder="Full Name"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                  />
+                  {errors.fullName && <span className="error-text">{errors.fullName}</span>}
                 </div>
-
+  
+                <div className="input-group">
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email Address"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                  {errors.email && <span className="error-text">{errors.email}</span>}
+                </div>
+  
+                <div className="input-group">
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  {errors.password && <span className="error-text">{errors.password}</span>}
+                </div>
+  
+                <div className="input-group">
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Confirm Password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                  />
+                  {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
+                </div>
+  
+                {errors.server && <div className="error-text">{errors.server}</div>}
+  
+                <button type="submit" className="signup-button">
+                  Sign Up
+                </button>
+              </form>
+              <div className="login-link">
+                Already have an account? <Link to="/login">Log In</Link>
               </div>
             </>
           )}
         </div>
+  
+        <div className="signup-illustration">
+          <div className="monitor-wrapper">
+            <img src="/assets/monitor.svg" alt="monitor" className="monitor" />
+            <img src="/assets/dash.svg" alt="dash" className="monitor-icons dash" />
+            <img src="/assets/miota.svg" alt="iota" className="monitor-icons iota" />
+            <img src="/assets/eth.svg" alt="eth" className="monitor-icons eth" />
+          </div>
+        </div>
       </div>
     </>
   );
+  
 };
 
 export default SignupPage;
