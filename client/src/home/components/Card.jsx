@@ -6,7 +6,7 @@ function Card(props) {
       <div className="text-center">
       <img
   alt="card-img"
-  src={process.env.PUBLIC_URL + "/img/" + props.img}
+  src={"/img/" + props.img}
   className="text-center img-fluid"/>
 
       </div>

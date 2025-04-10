@@ -87,7 +87,7 @@ const LoginPage = () => {
   return (
     <div className="signup-container">
       <div className="signup-inner animate-slide-in">
-      <img src="/assets/logo.svg" alt="Logo" className="logo" />
+      <img src="logo.svg" alt="Logo" className="logo" />
         {isSubmitted ? (
           <div className="success-message">
             <div className="success-icon">✓</div>
@@ -147,10 +147,10 @@ const LoginPage = () => {
 
       <div className="signup-illustration">
           <div className="monitor-wrapper">
-            <img src="/assets/monitor.svg" alt="monitor" className="monitor" />
-            <img src="/assets/dash.svg" alt="dash" className="monitor-icons dash" />
-            <img src="/assets/miota.svg" alt="iota" className="monitor-icons iota" />
-            <img src="/assets/eth.svg" alt="eth" className="monitor-icons eth" />
+            <img src="monitor.svg" alt="monitor" className="monitor" />
+            <img src="dash.svg" alt="dash" className="monitor-icons dash" />
+            <img src="miota.svg" alt="iota" className="monitor-icons iota" />
+            <img src="eth.svg" alt="eth" className="monitor-icons eth" />
           </div>
         </div>
     </div>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './signup.css';
-
 const additionalStyles = `
   
 `;
@@ -90,7 +89,7 @@ const SignupPage = () => {
     <>
       <div className="signup-container white-bg">
         <div className="signup-inner">
-          <img src="/assets/logo.svg" alt="Logo" className="logo" />
+          <img src="logo.svg" alt="Logo" className="logo" />
           {isSubmitted ? (
             <div className="success-message">
               <div className="success-icon">✓</div>
@@ -164,10 +163,10 @@ const SignupPage = () => {
   
         <div className="signup-illustration">
           <div className="monitor-wrapper">
-            <img src="/assets/monitor.svg" alt="monitor" className="monitor" />
-            <img src="/assets/dash.svg" alt="dash" className="monitor-icons dash" />
-            <img src="/assets/miota.svg" alt="iota" className="monitor-icons iota" />
-            <img src="/assets/eth.svg" alt="eth" className="monitor-icons eth" />
+            <img src="monitor.svg" alt="monitor" className="monitor" />
+            <img src="dash.svg" alt="dash" className="monitor-icons dash" />
+            <img src="miota.svg" alt="iota" className="monitor-icons iota" />
+            <img src="eth.svg" alt="eth" className="monitor-icons eth" />
           </div>
         </div>
       </div>

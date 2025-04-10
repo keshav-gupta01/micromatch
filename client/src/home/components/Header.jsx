@@ -5,7 +5,7 @@ function Header() {
 
   return (
     <header>
-      <video src={`${process.env.PUBLIC_URL}/video.mp4`} loop autoPlay muted />
+      <video src={`/video.mp4`} loop autoPlay muted />
 
       <h1>Welcome to MicroMatch</h1>
       <div className="row">

@@ -1,6 +1,6 @@
-import About from '../components/About';
-import Features from '../components/Features';
-import Contact from '../components/Contact';
+import About from '../components/About.jsx';
+import Features from '../components/Features.jsx';
+import Contact from '../components/Contact.jsx';
 
 function Main() {
   return (
