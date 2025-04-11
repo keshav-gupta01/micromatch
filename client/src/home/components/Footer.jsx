@@ -1,3 +1,6 @@
+
+import '../home.css';
+
 import { Link, animateScroll as scroll } from 'react-scroll'
 
 function Footer() {

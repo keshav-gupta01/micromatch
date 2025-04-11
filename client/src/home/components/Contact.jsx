@@ -1,3 +1,5 @@
+import '../home.css';
+
 function Contact() {
   return (
     <div className="container contact">

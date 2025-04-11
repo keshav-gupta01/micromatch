@@ -1,3 +1,5 @@
+import '../home.css';
+
 import Card from "./Card.jsx";
 function Features() {
   return (
