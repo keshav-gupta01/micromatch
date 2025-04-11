@@ -52,7 +52,7 @@ function Navbar() {
               </Link>
             </li>
             <li>
-              <Link onClick={openBar} activeClass="active" to="services" spy={true} smooth={true} duration={1000}>
+              <Link onClick={openBar} activeClass="active" to="features" spy={true} smooth={true} duration={1000}>
                 Features
               </Link>
             </li>

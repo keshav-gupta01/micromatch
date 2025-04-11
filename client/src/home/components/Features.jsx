@@ -1,4 +1,4 @@
-import Card from "./Card";
+import Card from "./Card.jsx";
 function Features() {
   return (
     <div className="container features">
