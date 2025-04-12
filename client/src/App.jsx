@@ -7,6 +7,9 @@ import GeneralDashboard from './GeneralDashboard/GeneralDashboard.jsx';
 import InfluencerSignIn from './GeneralDashboard/components/InfluencerSignIn.jsx';
 import BrandSignIn from './GeneralDashboard/components/BrandSignIn.jsx';
 import InfluencerDashboard from './InfluencerDashboard/InfluencerDashboard.jsx';
+import CampaignsBrowsePage from './InfluencerDashboard/CampaignsBrowsePage.jsx';
+import AdminDashboard from './AdminDashboard/AdminDashboard.jsx';
+import BusinessDashboard from './BusinessDashboard/BusinessDashboard.jsx';
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
         <Route path = "/influencer-signin" element = {<InfluencerSignIn/>}></Route>
         <Route path = "/brand-signin" element = {<BrandSignIn/>}></Route>
         <Route path = "/influencer-dashboard" element = {<InfluencerDashboard/>}></Route>
+        <Route path="/campaigns-browse-page" element={<CampaignsBrowsePage />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/business-dashboard" element={<BusinessDashboard />} />
       </Routes>
     </div>
   );

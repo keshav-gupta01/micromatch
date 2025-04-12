@@ -2,7 +2,7 @@
 
 
 
-body {
+/* body {
   overflow: auto;
   margin: 0;
   padding: 0;
@@ -15,7 +15,6 @@ body {
 .hidescroll {
   overflow: hidden!important;
 }
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -101,4 +100,4 @@ code {
   margin: 0rem 1rem!important;
   width:33.3%;
 }
- 
+  */

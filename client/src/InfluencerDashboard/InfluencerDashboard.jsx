@@ -87,7 +87,7 @@ const InfluencerDashboard = () => {
 
   // Navigate to available opportunities page
   const navigateToAvailableOpportunities = () => {
-    navigate('/available-opportunity');
+    navigate('/campaigns-browse-page');
   };
 
   // Icon components for a more professional look
