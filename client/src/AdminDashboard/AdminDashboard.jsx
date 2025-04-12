@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import OngoingCampaigns from './components/OngoingCampaigns';
 import Influencers from './components/Influencers';
 import Payments from './components/Payments';
+import PendingVerifications from './components/PendingVerifications';
 import DashboardHeader from './components/DashboardHeader';
 
 const dummyCampaigns = [
@@ -20,9 +21,9 @@ const dummyInfluencers = [
 ];
 
 const dummyPayments = [
-  { id: 1, date: "2023-10-01", amount: "$500", influencer: "Influencer One", brand: "FitStyle", status: "Paid" },
-  { id: 2, date: "2023-09-15", amount: "$300", influencer: "Influencer Two", brand: "GlowCosmetics", status: "Pending" },
-  { id: 3, date: "2023-08-22", amount: "$650", influencer: "Influencer Three", brand: "TechGadgets", status: "Paid" },
+  { id: 1, date: "2025-10-01", amount: "$500", influencer: "Influencer One", brand: "FitStyle", status: "Paid" },
+  { id: 2, date: "2025-09-15", amount: "$300", influencer: "Influencer Two", brand: "GlowCosmetics", status: "Pending" },
+  { id: 3, date: "2025-08-22", amount: "$650", influencer: "Influencer Three", brand: "TechGadgets", status: "Paid" },
 ];
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('ongoing campaigns');
@@ -54,6 +55,11 @@ const AdminDashboard = () => {
       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
       </svg>
+    ),
+     document: (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.25A3.375 3.375 0 001.875 5.25v13.5a3.375 3.375 0 003.375 3.375h13.5A3.375 3.375 0 0022.125 18.75v-2.25m-5.25-1.875v-2.625c0-.865-.333-1.575-.928-2.171a1.125 1.125 0 00-1.586-.427l-1.09-.363c-.439-.145-.763-.5-.91-.867-.144-.365-.039-.758.26-1.05L13.31 5.5 15 3.75" />
+</svg>
     ),
     logout: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -109,6 +115,7 @@ const AdminDashboard = () => {
         <nav className="mt-6 flex-grow">
           <ul>
             {[
+              { id: 'pending verifications', icon: 'document' },
               { id: 'ongoing campaigns', icon: 'overview' },
               { id: 'influencers', icon: 'collaborations' },
               { id: 'payments', icon: 'revenue' },
@@ -147,7 +154,9 @@ const AdminDashboard = () => {
           user={user}
           icons={icons}
         />
+
         <main className="p-6">
+          {activeTab === 'pending verifications' && <PendingVerifications />}
           {activeTab === 'ongoing campaigns' && <OngoingCampaigns campaigns={dummyCampaigns}/>}
           {activeTab === 'influencers' && <Influencers influencers={dummyInfluencers}/>}
           {activeTab === 'payments' && <Payments payments={dummyPayments}/>}
