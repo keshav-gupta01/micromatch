@@ -25,37 +25,37 @@ const InfluencerDashboard = () => {
   ];
 
   const availableCollaborations = [
-    { 
-      id: 1, 
-      brand: "FoodDelight", 
-      logo: "/api/placeholder/64/64", 
-      description: "Promote new organic snack line", 
-      payment: "$400", 
-      deadline: "2023-12-01" 
+    {
+      id: 1,
+      brand: "Food Delight",
+      logo: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",      
+      description: "Showcase our range of gourmet desserts and pastries.",
+      payment: "$450",
+      deadline: "2024-01-15"
     },
-    { 
-      id: 2, 
-      brand: "FitnessPro", 
-      logo: "/api/placeholder/64/64", 
-      description: "Create Instagram Reel showing workout routine", 
-      payment: "$250", 
-      deadline: "2023-11-15" 
+    {
+      id: 2,
+      brand: "First Gear Cafe",
+      logo: "https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      description: "Create a video highlighting our popular coffee blends and breakfast options.",
+      payment: "$300",
+      deadline: "2023-12-20"
     },
-    { 
-      id: 3, 
-      brand: "BeautyEssentials", 
-      logo: "/api/placeholder/64/64", 
-      description: "Review winter skincare collection", 
-      payment: "$350", 
-      deadline: "2023-12-10" 
+    {
+      id: 3,
+      brand: "Fenny's Kitchen",
+      logo: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHJlc3RhdXJhbnR8ZW58MHx8MHx8fDA%3D",
+      description: "Share your dining experience featuring our family meal recipes.",
+      payment: "$380",
+      deadline: "2024-01-05"
     },
-    { 
-      id: 4, 
-      brand: "HomeDecor", 
-      logo: "/api/placeholder/64/64", 
-      description: "Create home styling video with products", 
-      payment: "$500", 
-      deadline: "2023-11-30" 
+    {
+      id: 4,
+      brand: "Rasoi Restaurant",      
+      logo: "https://images.unsplash.com/photo-1552590635-27c2c2128abf?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      description: "Create a review video showcasing our authentic Indian dishes.",
+      payment: "$550",
+      deadline: "2023-12-28"
     },
   ];
 
@@ -238,12 +238,12 @@ const InfluencerDashboard = () => {
                 className="flex items-center cursor-pointer"
                 onClick={toggleUserMenu}
               >
-                <img 
-                  src={user.avatar} 
-                  alt="User" 
-                  className="w-8 h-8 rounded-full object-cover border border-gray-200"
-                />
-                <div className="hidden md:block ml-3">
+                
+                  <span className="mr-2 text-gray-500">{icons.profile}</span>
+                
+                <div className="hidden md:block ml-3" >
+
+                
                   <h3 className="font-medium text-sm text-gray-800">{user.name}</h3>
                   <p className="text-xs text-gray-500">{user.role}</p>
                 </div>

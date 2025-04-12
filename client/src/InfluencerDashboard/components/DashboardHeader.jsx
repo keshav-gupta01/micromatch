@@ -20,12 +20,11 @@ const DashboardHeader = ({ user, icons, userMenuOpen, toggleUserMenu, activeTab 
               className="flex items-center cursor-pointer"
               onClick={toggleUserMenu}
             >
-              <img 
-                src={user.avatar} 
-                alt="User" 
-                className="w-8 h-8 rounded-full object-cover border border-gray-200"
-              />
-              <div className="hidden md:block ml-3">
+              
+                <span className="w-8 h-8 text-gray-500">{icons.profile}</span>
+              
+              
+                <div className="hidden md:block ml-3">
                 <h3 className="font-medium text-sm text-gray-800">{user.name}</h3>
                 <p className="text-xs text-gray-500">{user.role}</p>
               </div>

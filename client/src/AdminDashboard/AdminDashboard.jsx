@@ -21,9 +21,9 @@ const dummyInfluencers = [
 ];
 
 const dummyPayments = [
-  { id: 1, date: "2025-10-01", amount: "$500", influencer: "Influencer One", brand: "FitStyle", status: "Paid" },
-  { id: 2, date: "2025-09-15", amount: "$300", influencer: "Influencer Two", brand: "GlowCosmetics", status: "Pending" },
-  { id: 3, date: "2025-08-22", amount: "$650", influencer: "Influencer Three", brand: "TechGadgets", status: "Paid" },
+  { id: 1, date: "2023-10-01", amount: "$500", influencer: "Influencer One", brand: "FitStyle", status: "Paid" },
+  { id: 2, date: "2023-09-15", amount: "$300", influencer: "Influencer Two", brand: "GlowCosmetics", status: "Pending" },
+  { id: 3, date: "2023-08-22", amount: "$650", influencer: "Influencer Three", brand: "TechGadgets", status: "Paid" },
 ];
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('ongoing campaigns');

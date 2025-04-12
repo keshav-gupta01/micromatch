@@ -2,6 +2,13 @@
 import React from 'react';
 
 const DashboardOverview = () => {
+  const icons = {
+        profile: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        ),
+      };
   const stats = [
     { title: 'Impressions', value: '120,000' },
     { title: 'Engagement', value: '15,000' },
@@ -33,7 +40,9 @@ const DashboardOverview = () => {
           {topInfluencers.map((influencer) => (
             <div key={influencer.id} className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
               <div className="flex items-center space-x-4">
-                <img src={influencer.avatar} alt={influencer.name} className="w-12 h-12 rounded-full object-cover" />
+                <div className="w-12 h-12 rounded-full flex items-center justify-center">
+                  {icons.profile}
+                </div>
                 <div>
                   <h3 className="font-medium text-gray-800">{influencer.name}</h3>
                   <p className="text-sm text-gray-500">{influencer.handle}</p>

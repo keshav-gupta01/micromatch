@@ -25,14 +25,12 @@ const DashboardHeader = ({ activeTab, toggleUserMenu, userMenuOpen, user = {}, i
             className="flex items-center space-x-2 cursor-pointer"
             onClick={toggleUserMenu}
           >
-            <img
-              src={user?.avatar || '/default-avatar.png'}
-              alt="User"
-              className="w-8 h-8 rounded-full object-cover border border-gray-300"
-            />
+          <span className="text-gray-500">
+              {icons.profile}
+            </span>
             <span className="text-sm text-gray-800 font-medium hidden md:inline">
               {user?.name || 'User'}
-            </span>
+              </span>
             {icons.chevronDown ? (
               <span className="text-gray-500">{icons.chevronDown}</span>
             ) : (
