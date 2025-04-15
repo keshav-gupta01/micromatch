@@ -10,6 +10,7 @@ import InfluencerDashboard from './InfluencerDashboard/InfluencerDashboard.jsx';
 import CampaignsBrowsePage from './InfluencerDashboard/CampaignsBrowsePage.jsx';
 import AdminDashboard from './AdminDashboard/AdminDashboard.jsx';
 import BusinessDashboard from './BusinessDashboard/BusinessDashboard.jsx';
+import LandingPage from './LandingPage/landingPage.jsx';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/home" element={<LandingPage/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/general-dashboard" element={<GeneralDashboard />} />
         <Route path = "/influencer-signin" element = {<InfluencerSignIn/>}></Route>
