@@ -1,61 +1,94 @@
-import React from 'react';
-import { icons } from '../InfluencerDashboard';
+import React, { useState } from "react";
+import {
+  Home,
+  LayoutDashboard,
+ 
+  Users,
+  Activity,
+  MessageCircle,
+  Bell,
+  User,
+  Settings,
+  LogOut,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
 
-const Sidebar = ({ sidebarCollapsed, toggleSidebar, activeTab, setActiveTab, icons }) => {
+const SIDEBAR_ITEMS = [
+  { name: "Overview", icon: LayoutDashboard },
+  { name: "Previous Collaborations", icon: Users },
+  { name: "Available Opportunities", icon: Activity },
+  { name: "Profile", icon: User },
+];
+
+
+const Sidebar = ({ activeTab, setActiveTab }) => {
+  const [collapsed, setCollapsed] = useState(false);
+
+  const toggleSidebar = () => {
+    setCollapsed((prev) => !prev);
+  };
+
+   const handleItemClick = (name) => {
+    const key = name.toLowerCase().replace(/\s+/g, "-");
+    setActiveTab(key);
+  };
+
   return (
-    <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-gray-900 text-white flex flex-col transition-all duration-300`}>
-      <div className="py-4 px-3 border-b border-gray-800 flex justify-center">
-        <button
-          onClick={toggleSidebar}
-          className="text-gray-400 hover:text-white focus:outline-none"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            {sidebarCollapsed ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+
+    <div
+  className={`${
+    collapsed ? "w-20" : "w-64"
+  } h-screen bg-[#104581] text-white flex flex-col justify-between transition-all duration-300 p-4
+  shadow-lg fixed top-4 left-4 rounded-xl z-50`}
+>
+
+      <div>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          {!collapsed && <div className="text-xl font-bold ml-2">MicroMatch</div>}
+          <button onClick={toggleSidebar}>
+            {collapsed ? (
+              <ChevronsRight className="w-6 h-6" />
             ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+              <ChevronsLeft className="w-6 h-6" />
             )}
-          </svg>
-        </button>
-      </div>
-      <nav className="mt-6 flex-grow">
-        <ul>
-          {[
-            { id: 'overview', icon: 'overview' },
-            { id: 'collaborations', icon: 'collaborations' },
-            { id: 'payments', icon: 'revenue' },
-            { id: 'analytics', icon: 'analytics' },
-            { id: 'performance', icon: 'performance' },
-            { id: 'settings', icon: 'settings' }
-          ].map((item) => (
-            <li key={item.id}>
-              <button
-                className={`w-full text-left px-3 py-3 flex items-center ${
-                  activeTab === item.id
-                    ? 'bg-blue-600 text-white font-medium'
-                    : 'text-gray-400 hover:bg-gray-800 hover:text-white'
-                }`}
-                onClick={() => setActiveTab(item.id)}
-              >
-                <span className={`${sidebarCollapsed ? 'mx-auto' : ''}`}>
-                  {icons[item.icon]}
-                </span>
-                {!sidebarCollapsed && (
-                  <span className="ml-3 capitalize">{item.id}</span>
-                )}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      {!sidebarCollapsed && (
-        <div className="p-4 text-gray-400 text-xs border-t border-gray-800">
-          <p>© 2023 Influencer Platform</p>
-          <p>Version 2.1.0</p>
+          </button>
         </div>
-      )}
+
+        {/* Nav Items */}
+        <nav className="mt-8 flex-grow">
+          {SIDEBAR_ITEMS.map((item) => {
+            const tabKey = item.name.toLowerCase().replace(/\s+/g, "-");
+            const isActive = activeTab === tabKey;
+
+            return (
+              <div
+                key={item.name}
+                onClick={() => handleItemClick(item.name)}
+                className={`flex items-center p-3 rounded-lg cursor-pointer mb-2 transition-colors ${
+                  isActive
+                    ? "bg-white text-[#104581] font-semibold"
+                    : "hover:bg-blue-800"
+                }`}
+              >
+                <item.icon className="w-5 h-5" />
+                {!collapsed && <span className="ml-3">{item.name}</span>}
+              </div>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Profile Section */}
+      <div className="flex items-center gap-3 p-3 bg-blue-800 rounded-lg cursor-pointer hover:bg-blue-900">
+        <div className="w-8 h-8 rounded-full bg-white text-[#104581] font-bold flex items-center justify-center">
+          BR
+        </div>
+        {!collapsed && <div className="text-sm">Bablu Rathore</div>}
+      </div>
     </div>
   );
 };
 
-export default Sidebar;
+export { Sidebar };
