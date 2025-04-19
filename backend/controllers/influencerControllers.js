@@ -1,0 +1,97 @@
+const Influencer = require('../models/InfluencerProfile');
+const axios = require('axios');
+
+// Instagram Token Exchange URL (example Flask server URL)
+const INSTAGRAM_TOKEN_URL = "https://micromatch-flask-server.onrender.com/server/get_access_token";
+
+// Function to handle Instagram verification (Get Access Token and Instagram ID)
+exports.verifyInstagram = async (req, res) => {
+  const { code } = req.query;
+
+  if (!code) {
+    return res.status(400).json({ success: false, message: 'Instagram code is missing' });
+  }
+
+  try {
+    const response = await axios.get(`${INSTAGRAM_TOKEN_URL}?code=${code}`);
+    const { accessToken, instagramId } = response.data;
+
+    if (!accessToken || !instagramId) {
+      return res.status(400).json({ success: false, message: 'Instagram verification failed' });
+    }
+
+    return res.json({ success: true, accessToken, instagramId });
+  } catch (error) {
+    console.error('Error verifying Instagram:', error);
+    return res.status(500).json({ success: false, message: 'Instagram verification error' });
+  }
+};
+
+// Register a new influencer
+exports.registerInfluencer = async (req, res) => {
+  const { name, gmail, contactNo, instaId, youtubeChannel, pincode, category, accessToken, instagramId } = req.body;
+
+  if (!accessToken || !instagramId) {
+    return res.status(400).json({ success: false, message: 'Instagram authentication required' });
+  }
+
+  try {
+    const newInfluencer = new Influencer({
+      name,
+      gmail,
+      contactNo,
+      instaId,
+      youtubeChannel,
+      pincode,
+      category,
+      accessToken,
+      instagramId
+    });
+
+    await newInfluencer.save();
+    return res.status(201).json({ success: true, message: 'Influencer registered successfully' });
+  } catch (error) {
+    console.error('Error registering influencer:', error);
+    return res.status(500).json({ success: false, message: 'Error registering influencer' });
+  }
+};
+
+// Get influencer profile details
+exports.getInfluencerProfile = async (req, res) => {
+  try {
+    const influencer = await Influencer.findById(req.params.id);
+    if (!influencer) {
+      return res.status(404).json({ success: false, message: 'Influencer not found' });
+    }
+    return res.json({ success: true, influencer });
+  } catch (error) {
+    console.error('Error retrieving influencer profile:', error);
+    return res.status(500).json({ success: false, message: 'Error retrieving influencer profile' });
+  }
+};
+
+// Update influencer profile details
+exports.updateInfluencerProfile = async (req, res) => {
+  const { name, gmail, contactNo, youtubeChannel, pincode, category } = req.body;
+
+  try {
+    const influencer = await Influencer.findById(req.params.id);
+    if (!influencer) {
+      return res.status(404).json({ success: false, message: 'Influencer not found' });
+    }
+
+    influencer.name = name || influencer.name;
+    influencer.gmail = gmail || influencer.gmail;
+    influencer.contactNo = contactNo || influencer.contactNo;
+    influencer.youtubeChannel = youtubeChannel || influencer.youtubeChannel;
+    influencer.pincode = pincode || influencer.pincode;
+    influencer.category = category || influencer.category;
+
+    await influencer.save();
+
+    return res.json({ success: true, message: 'Influencer profile updated successfully' });
+  } catch (error) {
+    console.error('Error updating influencer profile:', error);
+    return res.status(500).json({ success: false, message: 'Error updating influencer profile' });
+  }
+};
