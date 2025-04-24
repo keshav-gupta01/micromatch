@@ -2,7 +2,7 @@ import React from 'react';
 
 const DashboardHeader = ({ activeTab, toggleUserMenu, userMenuOpen, user = {}, icons = {} }) => {
   return (
-    <header className="h-16 bg-white px-6 border-b border-gray-200 flex items-center justify-between shadow-sm">
+    <header className="h-16 bg-white px-6 flex items-center justify-between shadow-sm">
       {/* Page Title */}
       <h1 className="text-xl font-semibold text-gray-800">
         {activeTab ? activeTab.charAt(0).toUpperCase() + activeTab.slice(1) : 'Admin Dashboard'}

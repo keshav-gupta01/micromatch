@@ -1,16 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const { verifyInstagram, registerInfluencer, getInfluencerProfile, updateInfluencerProfile } = require('../controllers/influencerControllers');
-// Verify Instagram via OAuth
-router.get('/verify-instagram', verifyInstagram);
+const { 
+  verifyInstagram, 
+  registerInfluencer, 
+  getInfluencerProfile, 
+  updateInfluencerProfile, 
+  verifyInfluencerProfile,
+  getEligibleCampaigns,
+  acceptCampaign,
+  submitCampaignStory,
+  validateCampaignManually
+} = require('../controllers/influencerControllers');
+const auth = require('../middleware/auth');
+const influencerOnly = require('../middleware/influencerMiddleware');
 
-// Register Influencer
+// Public routes
+router.get('/verify-instagram', verifyInstagram);
 router.post('/register', registerInfluencer);
 
-// Get Influencer Profile
-router.get('/:id', getInfluencerProfile);
+// Protected routes - require authentication
+router.get('/:id', auth, getInfluencerProfile);
+router.put('/:id', auth, updateInfluencerProfile);
+router.post('/:id/verify', auth, verifyInfluencerProfile);
 
-// Update Influencer Profile
-router.put('/:id', updateInfluencerProfile);
+// Protected routes - require influencer role
+router.get('/:id/campaigns/eligible', auth, influencerOnly, getEligibleCampaigns);
+router.post('/:influencerId/campaigns/:campaignId/accept', auth, influencerOnly, acceptCampaign);
+router.post('/:influencerId/campaigns/:campaignId/submit', auth, influencerOnly, submitCampaignStory);
+router.post('/:influencerId/campaigns/:campaignId/validate', auth, influencerOnly, validateCampaignManually);
 
 module.exports = router;

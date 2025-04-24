@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import Settings from './components/Settings';
+import CampaignsBrowsePage from './components/CampaignsBrowsePage'; // Import the CampaignsBrowsePage component
 
-const InfluencerDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+const InfluencerDashboard = () => {  const [activeTab, setActiveTab] = useState('overview');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Default to collapsed
   const navigate = useNavigate(); // Initialize the navigate function
@@ -85,11 +86,6 @@ const InfluencerDashboard = () => {
     setSidebarCollapsed(!sidebarCollapsed);
   };
 
-  // Navigate to available opportunities page
-  const navigateToAvailableOpportunities = () => {
-    navigate('/campaigns-browse-page');
-  };
-
   // Icon components for a more professional look
   const icons = {
     revenue: (
@@ -157,7 +153,7 @@ const InfluencerDashboard = () => {
   
 
   return (
-    <div className="h-screen w-screen flex bg-gray-100 overflow-hidden">
+    <div className="h-screen w-screen flex bg-[#96AED0] overflow-hidden">
       {/* Left sidebar - now collapsed by default */}
       <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-gray-900 text-white flex flex-col transition-all duration-300`}>
         {/* Toggle button */}
@@ -181,17 +177,16 @@ const InfluencerDashboard = () => {
           <ul>
             {[
               { id: 'overview', icon: 'overview' },
-              { id: 'collaborations', icon: 'collaborations' },
+              { id: 'campaigns', icon: 'collaborations' },
               { id: 'payments', icon: 'revenue' },
               { id: 'analytics', icon: 'analytics' },
-              { id: 'performance', icon: 'performance' },
               { id: 'settings', icon: 'settings' }
             ].map((item) => (
               <li key={item.id}>
                 <button
                   className={`w-full text-left px-3 py-3 flex items-center ${
                     activeTab === item.id
-                      ? 'bg-blue-600 text-white font-medium'
+                      ? 'bg-[#104581] text-white font-medium'
                       : 'text-gray-400 hover:bg-gray-800 hover:text-white'
                   }`}
                   onClick={() => setActiveTab(item.id)}
@@ -221,65 +216,81 @@ const InfluencerDashboard = () => {
       {/* Main content */}
       <div className="flex-grow overflow-y-auto">
         {/* Header - with user profile moved to right side */}
-        <header className="bg-white py-3 px-6 border-b border-gray-200 flex justify-between items-center">
-          <h1 className="text-2xl font-semibold text-gray-800">
-            {activeTab === 'overview' ? 'Dashboard Overview' : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-          </h1>
-          <div className="flex items-center space-x-4">
-            {/* Notification button */}
-            <button className="relative p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200">
-              {icons.notification}
-              <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-            </button>
-            
-            {/* User profile moved to right side */}
-            <div className="relative">
-              <div 
-                className="flex items-center cursor-pointer"
-                onClick={toggleUserMenu}
-              >
-                
-                  <span className="mr-2 text-gray-500">{icons.profile}</span>
-                
-                <div className="hidden md:block ml-3" >
-
-                
-                  <h3 className="font-medium text-sm text-gray-800">{user.name}</h3>
-                  <p className="text-xs text-gray-500">{user.role}</p>
-                </div>
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 ml-2 text-gray-400" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-              
-              {/* User dropdown menu */}
-              {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
-                  <ul className="py-1">
-                    <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
-                      <span className="mr-2 text-gray-500">{icons.profile}</span>
-                      <span className="text-sm">Profile</span>
-                    </li>
-                    <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
-                      <span className="mr-2 text-gray-500">{icons.settings}</span>
-                      <span className="text-sm">Settings</span>
-                    </li>
-                    <li className="px-4 py-2 hover:bg-gray-100 flex items-center text-red-600 cursor-pointer border-t border-gray-100">
-                      <span className="mr-2">{icons.logout}</span>
-                      <span className="text-sm">Logout</span>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
+        <>
+  <header className="bg-white py-3 px-6 flex justify-between items-center relative z-10">
+    <h1 className="text-2xl font-semibold text-gray-800">
+      {activeTab === 'overview' ? 'Dashboard Overview' : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+    </h1>
+    <div className="flex items-center space-x-4">
+      {/* Notification button */}
+      <button className="relative p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200">
+        {icons.notification}
+        <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+      </button>
+      
+      {/* User profile moved to right side */}
+      <div className="relative">
+        <div 
+          className="flex items-center cursor-pointer"
+          onClick={toggleUserMenu}
+        >
+          <span className="mr-2 text-gray-500">{icons.profile}</span>
+          <div className="hidden md:block ml-3">
+            <h3 className="font-medium text-sm text-gray-800">{user.name}</h3>
+            <p className="text-xs text-gray-500">{user.role}</p>
           </div>
-        </header>
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="h-5 w-5 ml-2 text-gray-400" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+        
+        {/* User dropdown menu */}
+        {userMenuOpen && (
+          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+            <ul className="py-1">
+              <Link to="/influencer-dashboard/profile">
+              <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
+                <span className="mr-2 text-gray-500">{icons.profile}</span>
+                <span className="text-sm">Profile</span>
+              </li>
+              </Link>
+              <Link to="/influencer-dashboard/settings">
+                <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
+                  <span className="mr-2 text-gray-500">{icons.settings}</span><span className="text-sm">Settings</span>
+                </li></Link>
+              <li className="px-4 py-2 hover:bg-gray-100 flex items-center text-red-600 cursor-pointer border-t border-gray-100">
+                <span className="mr-2">{icons.logout}</span>
+                <span className="text-sm">Logout</span>
+              </li>
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  </header>
+  
+  {/* Wavy bottom border */}
+  <div className="relative bg-[#96AED0] w-full overflow-hidden h-12">
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 1440 120" 
+    preserveAspectRatio="none"
+    className="absolute bottom-0 w-full h-full"
+  >
+    <path 
+      fill="#ffffff" 
+      d="M0,64L40,53.3C80,43,160,21,240,32C320,43,400,85,480,96C560,107,640,85,720,74.7C800,64,880,64,960,69.3C1040,75,1120,85,1200,80C1280,75,1360,53,1400,42.7L1440,32L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"
+    />
+  </svg>
+  <div className="absolute bottom-0 w-full"></div>
+</div>
+</>
         
         {/* Main content area */}
         <main className="p-6">
@@ -293,7 +304,7 @@ const InfluencerDashboard = () => {
                     className="bg-white p-6 rounded-lg shadow-md border border-gray-200"
                   >
                     <div className="flex items-start">
-                      <div className="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                      <div className="p-3 rounded-lg bg-blue-100 text-[#104581] mr-4">
                         {icons[stat.icon]}
                       </div>
                       <div>
@@ -309,7 +320,7 @@ const InfluencerDashboard = () => {
               <div className="mb-8 bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                   <h2 className="text-lg font-semibold text-gray-800">Previous Collaborations</h2>
-                  <button className="text-blue-600 text-sm hover:text-blue-800">View All</button>
+                  <button className="text-[#104581] text-sm hover:text-[#104581]">View All</button>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -339,47 +350,10 @@ const InfluencerDashboard = () => {
                 </div>
               </div>
               
-              {/* Available Collaborations - Card Style with Brand Logos */}
-              <div className="mb-8 bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                  <h2 className="text-lg font-semibold text-gray-800">Available Opportunities</h2>
-                  <button 
-                    className="text-blue-600 text-sm hover:text-blue-800" 
-                    onClick={navigateToAvailableOpportunities} // Added onClick handler here
-                  >
-                    Browse More
-                  </button>
-                </div>
-                <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {availableCollaborations.map((collab) => (
-                    <div 
-                      key={collab.id} 
-                      className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex items-center mb-3">
-                        <img 
-                          src={collab.logo} 
-                          alt={`${collab.brand} logo`} 
-                          className="w-10 h-10 rounded object-cover mr-3"
-                        />
-                        <div className="flex-grow">
-                          <h3 className="font-medium text-gray-800">{collab.brand}</h3>
-                          <span className="font-bold text-gray-900">{collab.payment}</span>
-                        </div>
-                      </div>
-                      <p className="text-gray-600 text-sm mb-3">{collab.description}</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs text-gray-500">Deadline: {collab.deadline}</span>
-                        <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
-                          Apply
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </>
           )}
+
+          {activeTab === 'campaigns' && <CampaignsBrowsePage />}          
           
           {activeTab === 'payments' && (
             <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
@@ -412,7 +386,7 @@ const InfluencerDashboard = () => {
                             {payment.status}
                           </span>
                         </td>
-                        <td className="py-4 px-6 text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
+                        <td className="py-4 px-6 text-sm text-[#104581] hover:text-blue-800 cursor-pointer">
                           View Receipt
                         </td>
                       </tr>

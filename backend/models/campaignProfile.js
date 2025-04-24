@@ -16,6 +16,18 @@ const mediaInfoSchema = new mongoose.Schema({
   type: String, // 'image' or 'video'
 }, { _id: false });
 
+const campaignAnalyticsSchema = new mongoose.Schema({
+  influencer_id: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Influencer' 
+  },
+  views : Number,
+  reach: Number,
+  shares: Number,
+  description: String,
+  timestamp: { type: Date, default: Date.now }
+}, { _id: false });
+
 const campaignSchema = new mongoose.Schema({
   brand: { 
     type: mongoose.Schema.Types.ObjectId, 
@@ -52,20 +64,28 @@ const campaignSchema = new mongoose.Schema({
   media: [String], // Cloudinary URLs
   mediaInfo: [mediaInfoSchema],
   products: [productSchema],
+  camp_type: Number,
   hashtags: String,
   status: { 
     type: String, 
-    enum: ['pending', 'active', 'completed', 'rejected'], 
-    default: 'pending' 
+    enum: ['active', 'completed'], 
+    default: 'active'
   },
   matchedInfluencers: [{ 
+      
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'InfluencerProfile' 
+    }],
+  acceptedInfluencers: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'InfluencerProfile' 
-  }],
-  invitedInfluencers: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'InfluencerProfile' 
-  }]
+}],
+  completedInfluencers: [{
+  type: mongoose.Schema.Types.ObjectId, 
+  ref: 'InfluencerProfile' 
+}],
+campaignAnalytics:[campaignAnalyticsSchema],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Campaign', campaignSchema);
+

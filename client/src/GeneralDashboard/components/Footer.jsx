@@ -1,71 +1,36 @@
-import { footerLinks } from "../utils";
-import { SiGithub, SiLinkedin} from "react-icons/si";
-import '../GeneralDashboard.css';
-
-const SocialMedia = ({ icon, name, link }) => {
-  return (
-    <a href={link} className="relative social-icon">
-      <span className="social-media-icon mt-8 ss:mt-0 p-3 xs:py-4 xs:px-4 ss:px-[1.03rem] text-black block rounded-full z-2 ss:absolute top-1/2 left-0 -translate-y-1/2">
-        {icon}
-      </span>
-      <span className="hidden ss:block social-name text-base font-[500] capitalize bg-white text-black rounded-full transition-all py-[0.9rem] px-[1.6rem] hover:px-16 cursor-pointer z-1 overflow-hidden">
-        {name}
-      </span>
-    </a>
-  );
-};
+import React from 'react'
+import { FaFacebook, FaLinkedin, FaTwitter, FaYoutube } from 'react-icons/fa'
 
 const Footer = () => {
-  const date = new Date().getFullYear();
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
-    <section className="relative font-poppins pb-10 sm:pb-16">
-      <div className="flex items-start md:flex-row flex-col gap-10 md:gap-24">
-        <div className="md:max-w-[370px]">
-          <h2 className="text-3xl text-black">MicroMatch</h2>
-          <p className="text-black leading-relaxed text-base ss:text-lg mt-5">
-            A new way to make the Advertisement easy, reliable and secure.
-          </p>
+    <footer className="w-full bg-[#96AED0] py-8 px-4">
+      <div className="md:max-w-[1100px] m-auto">
+        
+        {/* Horizontal Navigation Links */}
+        <div className="pt-6 border-t border-gray-200">
+          <ul className="flex flex-wrap justify-center sm:justify-between gap-4 sm:gap-8 text-gray-600">
+            <li className="cursor-pointer hover:text-gray-900" onClick={scrollToTop}>Home</li>
+            <li className="cursor-pointer hover:text-gray-900">Terms & Conditions</li>
+            <li className="cursor-pointer hover:text-gray-900">Privacy Policy</li>
+            <li className="cursor-pointer hover:text-gray-900">Support</li>
+            <li className="cursor-pointer hover:text-gray-900">Contact</li>
+          </ul>
         </div>
-        <div className="w-full md:flex-1 flex items-start ss:justify-between gap-10 ss:gap-5 ss:flex-nowrap flex-wrap">
-          {footerLinks.map((item, index) => (
-            <div key={index}>
-              <h3 className="font-semibold">{item.title}</h3>
-              <ul className="flex flex-col gap-3 xs:gap-5 text-black mt-5">
-                {item.links.map((link, index) => (
-                  <a key={index} href={link.link} target="_blank">
-                    <li className="text-[.9rem] font-[500] hover:text-black">
-                      {link.name}
-                    </li>
-                  </a>
-                ))}
-              </ul>
-            </div>
-          ))}
+        
+        {/* Copyright */}
+        <div className="text-center mt-6 text-gray-500 text-sm">
+          © {new Date().getFullYear()} Your Company. All rights reserved.
         </div>
       </div>
+    </footer>
+  )
+}
 
-      <div className="flex items-center justify-between md:flex-row flex-col gap-5 pt-10 mt-10 sm:mt-16 border-t">
-        <p className="md:text-base xs:text-sm text-xs">
-          Copyright Ⓒ {date} MicroMatch. All Rights Reserved.
-        </p>
-        <div>
-          <div className="flex items-center gap-3 xs:gap-5 text-lg xs:text-xl">
-            <SocialMedia
-              icon={<SiGithub />}
-              name="github"
-              link=""
-            />
-            <SocialMedia
-              icon={<SiLinkedin />}
-              name="linkedin"
-              link=""
-            />
-            
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default Footer;
+export default Footer

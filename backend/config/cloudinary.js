@@ -1,4 +1,3 @@
-// cloudinary.js
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -12,16 +11,17 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'campaign_media',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'mp4', 'mov', 'avi'],
-    resource_type: 'auto' // Automatically detect image/video
+    folder: 'campaign_media', // Adjusted folder to store all media related to campaigns
+    allowed_formats: ['jpg', 'jpeg', 'png', 'mp4', 'mov', 'avi'], // Allows image and video formats
+    resource_type: 'auto' // Automatically detects the type (image/video)
   }
 });
 
-const upload = multer({ 
+// Main upload setup for both brand logo and campaign media
+const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 50 * 1024 * 1024 // 50MB limit
+    fileSize: 50 * 1024 * 1024 // 50MB limit for the total file uploads
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {

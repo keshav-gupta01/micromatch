@@ -9,7 +9,7 @@ const PreviousCollaborations = ({ previousCollaborations }) => {
         <h2 className="text-lg font-semibold text-gray-800">
           Previous Collaborations
         </h2>
-        <button className="text-blue-600 text-sm hover:text-blue-800">
+        <button className="text-[#104581] text-sm hover:text-blue-800">
           View All
         </button>
       </div>

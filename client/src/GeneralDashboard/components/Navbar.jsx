@@ -1,102 +1,86 @@
-import { useState } from 'react';
-import { HiMenu, HiX } from 'react-icons/hi';
-import UserTypeSelection from './UserTypeSelection'; // Import your component
+import React, { useState } from 'react'
+import Logo from '../assets/logo.svg'
+import lock from '../assets/lock.svg'
+import Hamburger from '../assets/hamburgerMenu.svg'
+import Close from '../assets/close.svg'
+import { motion } from 'framer-motion'
+import UserTypeSelection from './userTypeSelection'
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [showSelection, setShowSelection] = useState(false); // For Get Started
+    const [toggle, setToggle] = useState(false)
+    const [showUserTypeModal, setShowUserTypeModal] = useState(false)
 
-  const navLinks = [
-    { name: 'Home', href: '#' },
-    { name: 'Profile', href: '#' },
-    { name: 'Settings', href: '#' }
-  ];
+    const handleToggle = () => {
+        setToggle(!toggle)
+    }
 
-  const handleGetStartedClick = () => {
-    setShowSelection(true);
-  };
+    const openUserTypeModal = () => {
+        setShowUserTypeModal(true)
+    }
 
-  const handleBack = () => {
-    setShowSelection(false);
-  };
+    const closeUserTypeModal = () => {
+        setShowUserTypeModal(false)
+    }
 
-  return (
-    <>
-      {showSelection && (
-        <UserTypeSelection onBack={handleBack} />
-      )}
+    const scrollToSection = (elementId) => {
+        const element = document.getElementById(elementId)
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' })
+            setToggle(false) // Close mobile menu if open
+        }
+    }
 
-      <nav className="fixed top-0 w-full bg-white shadow-md z-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
-
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-slate-900">MicroMatch</h1>
-            </div>
-
-            {/* Centered Nav Links (Desktop) */}
-            <div className="hidden md:flex flex-1 justify-center space-x-8">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="text-slate-800 hover:text-blue-600 transition-colors"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </div>
-
-            {/* Right Button (Desktop) */}
-            <div className="hidden md:block">
-              <button
-                onClick={handleGetStartedClick}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
-              >
-                Get Started
-              </button>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="text-slate-800 hover:text-blue-600 transition-colors"
-              >
-                {isOpen ? <HiX size={24} /> : <HiMenu size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile Nav Menu */}
-          {isOpen && (
-            <div className="md:hidden absolute top-16 left-0 w-full bg-white shadow-md rounded-b-xl">
-              <div className="px-4 py-2 space-y-2">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="block py-2 text-slate-800 hover:text-blue-600 transition-colors"
-                  >
-                    {link.name}
-                  </a>
-                ))}
-                <div className="py-2">
-                  <button
-                    onClick={handleGetStartedClick}
-                    className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
-                  >
-                    Get Started
-                  </button>
+    return (
+        <>
+            <div className='w-full h-[96px] bg-white shadow-sm'>
+                <div className='p-4 md:max-w-[1080px] max-w-[400px] m-auto w-full h-full flex justify-between items-center'>
+                    <img src={Logo} alt="logo" className='h-[25px] cursor-pointer' />
+                    <div className="flex items-center">
+                        <ul className='hidden md:flex gap-4 '>
+                            <li className='cursor-pointer'>Home</li>
+                            <li className='cursor-pointer' onClick={() => scrollToSection('about-section')}>About</li>
+                            <li className='cursor-pointer' onClick={() => scrollToSection('support-section')}>Support</li>
+                        </ul>
+                    </div>
+                    <div className='md:flex hidden'>
+                        <button 
+                            onClick={openUserTypeModal}
+                            className='px-8 py-3 bg-[#104581] text-white rounded-lg hover:bg-[#0d3a6d] transition-all'
+                        >
+                            Get Started
+                        </button>
+                    </div>
+                    <motion.div whileTap={{ scale: 0.6 }} className="md:hidden cursor-pointer" onClick={handleToggle}>
+                        <img src={toggle ? Close : Hamburger} alt="hamburger" />
+                    </motion.div>
                 </div>
-              </div>
+                <div>
+                    <motion.ul
+                        initial={{ opacity: 0, x: 200 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 200 }}
+                        className={toggle ? 'absolute z-10 p-4 bg-white w-full px-8 md:hidden' : 'hidden'}>
+                        <li className='p-4 hover:bg-gray-50 cursor-pointer'>Home</li>
+                        <li className='p-4 hover:bg-gray-50 cursor-pointer' onClick={() => scrollToSection('about-section')}>About</li>
+                        <li className='p-4 hover:bg-gray-50 cursor-pointer' onClick={() => scrollToSection('support-section')}>Support</li>
+                        <div className='flex flex-col my-4'>
+                            <button 
+                                onClick={() => {
+                                    openUserTypeModal();
+                                    setToggle(false);
+                                }}
+                                className='w-full text-white px-8 py-5 bg-[#104581] rounded-lg hover:bg-[#0d3a6d] transition-all'
+                            >
+                                Get Started
+                            </button>
+                        </div>
+                    </motion.ul>
+                </div>
             </div>
-          )}
-        </div>
-      </nav>
-    </>
-  );
-};
 
-export default Navbar;
+            {showUserTypeModal && <UserTypeSelection onClose={closeUserTypeModal} />}
+        </>
+    )
+}
+
+export default Navbar

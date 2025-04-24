@@ -12,7 +12,7 @@ const AvailableOpportunities = ({
           Available Opportunities
         </h2>
         <button
-          className="text-blue-600 text-sm hover:text-blue-800"
+          className="text-[#104581] text-sm hover:text-blue-800"
           onClick={navigateToAvailableOpportunities}
         >
           Browse More
@@ -36,7 +36,7 @@ const AvailableOpportunities = ({
               {collab.description}
             </p>
             <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-500">Deadline: {collab.deadline}</span> <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">Apply</button>
+              <span className="text-xs text-gray-500">Deadline: {collab.deadline}</span> <button className="px-3 py-1 bg-[#104581] text-white text-sm rounded hover:bg-blue-700">Apply</button>
             </div>
           </div>
         ))}

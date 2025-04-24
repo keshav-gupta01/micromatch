@@ -11,7 +11,7 @@ const StatsSection = ({ stats, icons }) => {
           className="bg-white p-6 rounded-lg shadow-md border border-gray-200"
         >
           <div className="flex items-start">
-            <div className="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">{/* Use icons prop to render icon */}
+            <div className="p-3 rounded-lg bg-blue-100 text-[#104581] mr-4">{/* Use icons prop to render icon */}
               {icons[stat.icon]}
             </div>
             <div>

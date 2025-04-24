@@ -11,7 +11,25 @@ const InfluencerSchema = new mongoose.Schema(
     category: { type: String },
     accessToken: { type: String, required: true },
     instagramId: { type: String, required: true },
-    verified: { type: Boolean, default: false }
+    verified: { type: Boolean, default: false },
+    verfied_Status:{type:String,default:"Verification will be started, we will update you when it is done"},
+    // New fields to track campaigns
+    eligible_campaigns: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Campaign' 
+    }],
+    accepted_campaigns: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Campaign' 
+    }],
+    applied_campaigns: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Campaign' 
+    }],
+    completed_campaigns: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Campaign' 
+    }]
   },
   { timestamps: true }
 );

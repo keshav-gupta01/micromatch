@@ -96,7 +96,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="h-screen w-screen flex bg-gray-100 overflow-hidden">
+    <div className="h-screen w-screen flex bg-[#96AED0] overflow-hidden">
       <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-gray-900 text-white flex flex-col transition-all duration-300`}>
         <div className="py-4 px-3 border-b border-gray-800 flex justify-center">
           <button
@@ -154,6 +154,21 @@ const AdminDashboard = () => {
           user={user}
           icons={icons}
         />
+        {/* Wavy bottom border */}
+  <div className="relative bg-[#96AED0] w-full overflow-hidden h-12">
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 1440 120" 
+    preserveAspectRatio="none"
+    className="absolute bottom-0 w-full h-full"
+  >
+    <path 
+      fill="#ffffff" 
+      d="M0,64L40,53.3C80,43,160,21,240,32C320,43,400,85,480,96C560,107,640,85,720,74.7C800,64,880,64,960,69.3C1040,75,1120,85,1200,80C1280,75,1360,53,1400,42.7L1440,32L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"
+    />
+  </svg>
+  <div className="absolute bottom-0 w-full"></div>
+</div>
 
         <main className="p-6">
           {activeTab === 'pending verifications' && <PendingVerifications />}

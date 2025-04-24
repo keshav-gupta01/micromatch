@@ -101,7 +101,7 @@ const LoginPage = () => {
         ) : (
           <>
             <div className="signup-header">
-              <h2>Welcome Back!</h2>
+              <h1>Welcome Back!</h1>
               <p>Please log in to your account</p>
             </div>
 

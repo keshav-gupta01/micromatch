@@ -25,7 +25,8 @@ const LaunchCampaign = () => {
       state: '',
       district: '',
       pincode: ''
-    }
+    },
+    campaignRange: '', 
   });
   
   const [mediaItems, setMediaItems] = useState([]);
@@ -143,7 +144,9 @@ const LaunchCampaign = () => {
       if (!formData.location.district) newErrors['location.district'] = 'District is required';
       if (!formData.location.pincode) newErrors['location.pincode'] = 'Pincode is required';
     }
-    
+
+    if (!formData.campaignRange) newErrors.campaignRange = 'Please select a campaign range';
+
     if (mediaItems.length === 0) newErrors.media = 'At least one media file is required';
     
     products.forEach((product, index) => {
@@ -171,7 +174,8 @@ const LaunchCampaign = () => {
       
       formDataForSubmit.append('campaignName', formData.campaignName);
       formDataForSubmit.append('category', formData.category);
-      formDataForSubmit.append('budget', formData.budget);
+      formDataF
+      orSubmit.append('budget', formData.budget);
       formDataForSubmit.append('minFollowers', formData.minFollowers);
       formDataForSubmit.append('productDescription', formData.productDescription);
       formDataForSubmit.append('ecommLink', formData.ecommLink);
@@ -180,7 +184,9 @@ const LaunchCampaign = () => {
       if (formData.isLocationSpecific === 'yes') {
         formDataForSubmit.append('location', JSON.stringify(formData.location));
       }
-      
+
+      formDataForSubmit.append('campaignRange', formData.campaignRange);
+
       formDataForSubmit.append('hashtags', hashtags);
       formDataForSubmit.append('products', JSON.stringify(products));
       
@@ -226,7 +232,8 @@ const LaunchCampaign = () => {
           state: '',
           district: '',
           pincode: ''
-        }
+        },
+        campaignRange: '', 
       });
       setMediaItems([]);
       setProducts([{ name: '', price: '' }]);
@@ -258,7 +265,7 @@ const LaunchCampaign = () => {
               name="campaignName"
               value={formData.campaignName}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
               aria-describedby="campaignName-error"
               required
             />
@@ -275,7 +282,7 @@ const LaunchCampaign = () => {
               id="category"
               value={formData.category}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
               aria-describedby="category-error"
               required
             >
@@ -298,7 +305,7 @@ const LaunchCampaign = () => {
               name="budget"
               value={formData.budget}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
               aria-describedby="budget-error"
               placeholder="Enter campaign budget"
               required
@@ -317,7 +324,7 @@ const LaunchCampaign = () => {
               name="minFollowers"
               value={formData.minFollowers}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
               aria-describedby="minFollowers-error"
               placeholder="Enter minimum followers count"
               min="0"
@@ -338,7 +345,7 @@ const LaunchCampaign = () => {
             name="ecommLink"
             value={formData.ecommLink}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
             placeholder="https://example.com/product"
           />
         </div>
@@ -375,6 +382,33 @@ const LaunchCampaign = () => {
           {errors.isLocationSpecific && <p className="text-sm text-red-500 mt-1">{errors.isLocationSpecific}</p>}
         </div>
 
+        <div>
+          <label className="block text-sm font-medium text-gray-800 mb-1" htmlFor="campaignRange">
+            Select Campaign Range*
+            </label>
+            <select
+              name="campaignRange"
+              id="campaignRange"
+              value={formData.campaignRange}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
+              aria-describedby="campaignRange-error bg-white"
+              required
+            >
+              <option value="">Select campaign range</option>
+              <option value="local">Local - Within your city</option>
+              <option value="regional">Regional - Within your District</option>
+            </select>
+            {errors.campaignRange && (
+              <p id="campaignRange-error" className="text-sm text-red-500">
+                {errors.campaignRange}
+              </p>
+            )}
+          </div>        
+
+
+
+
         {/* Location Fields */}
         {formData.isLocationSpecific === 'yes' && (
           <div className="bg-gray-50 p-6 rounded-lg">
@@ -390,7 +424,7 @@ const LaunchCampaign = () => {
                   name="location.country"
                   value={formData.location.country}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
                   aria-describedby="country-error"
                   required
                 />
@@ -406,7 +440,7 @@ const LaunchCampaign = () => {
                   name="location.state"
                   value={formData.location.state}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
                   aria-describedby="state-error"
                   required
                 />
@@ -422,7 +456,7 @@ const LaunchCampaign = () => {
                   name="location.district"
                   value={formData.location.district}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
                   aria-describedby="district-error"
                   required
                 />
@@ -438,7 +472,7 @@ const LaunchCampaign = () => {
                   name="location.pincode"
                   value={formData.location.pincode}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
                   aria-describedby="pincode-error"
                   required
                 />
@@ -551,7 +585,7 @@ const LaunchCampaign = () => {
             name="productDescription"
             value={formData.productDescription}
             onChange={handleChange}
-            rows={4}
+            rows={4} 
             className="w-full px-4 py-3 rounded-lg border border-gray-300"
             aria-describedby="description-error"
             required
@@ -569,7 +603,7 @@ const LaunchCampaign = () => {
             id="hashtags"
             value={hashtags}
             onChange={handleHashtagsChange}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
             placeholder="#brandname, #campaign, #product"
           />
         </div>
@@ -585,14 +619,14 @@ const LaunchCampaign = () => {
                 placeholder="Product Name"
                 value={product.name}
                 onChange={(e) => handleProductChange(index, e)}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white"
               />
               <input
                 type="number"
                 name="price"
                 placeholder="Price"
                 value={product.price}
-                onChange={(e) => handleProductChange(index, e)}
+                onChange={(e) => handleProductChange(index, e)} bg-white
                 className="w-full px-4 py-3 rounded-lg border border-gray-300"
                 min="0"
               />

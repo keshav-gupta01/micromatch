@@ -32,7 +32,7 @@ const Sidebar = ({ sidebarCollapsed, toggleSidebar, activeTab, setActiveTab, ico
               <button
                 className={`w-full text-left px-3 py-3 flex items-center ${
                   activeTab === item.id
-                    ? 'bg-blue-600 text-white font-medium'
+                    ? 'bg-[#104581] text-white font-medium'
                     : 'text-gray-400 hover:bg-gray-800 hover:text-white'
                 }`}
                 onClick={() => setActiveTab(item.id)}
