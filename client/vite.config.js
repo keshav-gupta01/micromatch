@@ -4,9 +4,12 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   server: {
-    port: process.env.PORT || 5173, // If the PORT env is set, use it; otherwise, default to 5173
+    host: '0.0.0.0', // Ensure it's accessible externally
+    port: process.env.PORT ? parseInt(process.env.PORT) : 5173, // Use the PORT env variable or fallback to 5173
   },
-  
+
   plugins: [
-    react(),tailwindcss()],
+    react(),
+    tailwindcss(),
+  ],
 })
