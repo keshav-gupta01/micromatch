@@ -4,7 +4,7 @@ import lock from '../assets/lock.svg'
 import Hamburger from '../assets/hamburgerMenu.svg'
 import Close from '../assets/close.svg'
 import { motion } from 'framer-motion'
-import UserTypeSelection from './userTypeSelection'
+import UserTypeSelection from './UserTypeSelection'
 
 const Navbar = () => {
     const [toggle, setToggle] = useState(false)
