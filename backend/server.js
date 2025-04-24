@@ -43,7 +43,7 @@ app.get('/api/cloudinary-status', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server started on port ${PORT}`);
   console.log(`Cloudinary configured: ${!!cloudinary.config().api_key}`); // Add this line
 });
