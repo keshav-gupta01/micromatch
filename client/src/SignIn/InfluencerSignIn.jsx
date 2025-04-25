@@ -29,12 +29,12 @@ export default function InfluencerSignIn() {
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const code = queryParams.get('code');
-
+  
     if (code) {
       axios
         .get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
           headers: {
-            headers: {'x-auth-token': localStorage.getItem('token')}
+            'x-auth-token': localStorage.getItem('token')
           }
         })
         .then(res => {
@@ -53,7 +53,7 @@ export default function InfluencerSignIn() {
         });
     }
   }, []);
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });

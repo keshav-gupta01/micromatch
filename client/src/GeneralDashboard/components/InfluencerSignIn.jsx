@@ -28,7 +28,7 @@ export default function InfluencerSignIn() {
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const code = queryParams.get('code');
-    console.log(code)
+    
 
     if (code) {
       axios
