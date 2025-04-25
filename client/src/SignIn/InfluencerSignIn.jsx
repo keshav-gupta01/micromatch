@@ -32,7 +32,7 @@ export default function InfluencerSignIn() {
 
     if (code) {
       axios
-        .get(`https://micromatch-flask-server.onrender.com/api/influencers/verify-instagram?code=${code}`, {
+        .get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
           headers: {
             headers: {'x-auth-token': localStorage.getItem('token')}
           }
@@ -92,7 +92,7 @@ export default function InfluencerSignIn() {
     }
 
     try {
-      const res = await axios.post('https://micromatch-flask-server.onrender.com/api/influencers/register', {
+      const res = await axios.post('https://micromatch-backend.onrender.com/api/influencers/register', {
         ...formData,
         accessToken,
         instagramId
