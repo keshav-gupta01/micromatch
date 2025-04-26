@@ -22,7 +22,7 @@ exports.verifyInstagram = async (req, res) => {
     const insta_scoped_id = response.data('insta_scoped_id')
       
     if (!access_token || !insta_scoped_id) {
-      return res.status(400).json({ success: false, message: 'Instagram verification failed', access_token,insta_scoped_id });
+      return res.status(400).json({ message: 'Instagram verification failed'+access_token+insta_scoped_id });
     }
 
     return res.json({ success: true, access_token, insta_scoped_id });
