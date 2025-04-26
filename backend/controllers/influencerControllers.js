@@ -10,7 +10,7 @@ const INSTAGRAM_TOKEN_URL = "https://micromatch-flask-server.onrender.com/server
 
 // Function to handle Instagram verification (Get Access Token and Instagram ID)
 exports.verifyInstagram = async (req, res) => {
-  const { code } = req.query.code;
+  const code = req.query.code;
 
   if (!code) {
     return res.status(400).json({ success: false, message: 'Instagram code is missing' });
