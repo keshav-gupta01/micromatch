@@ -28,6 +28,7 @@ const InfluencerSignIn = () => {
     // Check if Instagram returned a code
     const queryParams = new URLSearchParams(window.location.search);
     const code = queryParams.get('code');
+    console.log('Instagram auth code:', code); // Log the code to check if it is passed
 
     if (code) {
       axios.get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
@@ -38,6 +39,8 @@ const InfluencerSignIn = () => {
           setAllowPermission(true);
           setAccessToken(res.data.access_token);
           setInstagramId(res.data.insta_scoped_id);
+          localStorage.setItem('instagramAccessToken', res.data.access_token);  // Save Instagram token
+          localStorage.setItem('instagramId', res.data.insta_scoped_id); // Save Instagram ID
           alert("✅ Instagram verified successfully");
         } else {
           alert("Instagram verification failed. Please try again.");
@@ -88,6 +91,8 @@ const InfluencerSignIn = () => {
           alert("✅ Signup successful!");
           // Clear localStorage saved form data
           localStorage.removeItem('influencerFormData');
+          localStorage.removeItem('instagramAccessToken'); // Clear saved Instagram token
+          localStorage.removeItem('instagramId'); // Clear saved Instagram ID
           navigate("/influencer-login");
         } else {
           alert("Signup failed. Please try again.");
