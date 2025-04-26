@@ -28,7 +28,6 @@ export default function InfluencerSignIn() {
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const code = queryParams.get('code');
-    
 
     if (code) {
       axios
@@ -40,8 +39,8 @@ export default function InfluencerSignIn() {
         .then(res => {
           if (res.data.success) {
             setAllowPermission(true);
-            setAccessToken(res.data.accessToken);
-            setInstagramId(res.data.instagramId);
+            setAccessToken(res.data.access_token);
+            setInstagramId(res.data.insta_scoped_id);
             alert("✅ Instagram verified successfully");
           } else {
             alert("Instagram verification failed");
@@ -49,6 +48,7 @@ export default function InfluencerSignIn() {
         })
         .catch(err => {
           console.error("Error verifying Instagram:", err);
+          console.log(code)
           alert("Error connecting Instagram. Please try again.");
         });
     }
