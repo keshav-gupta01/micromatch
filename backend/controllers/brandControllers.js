@@ -46,8 +46,6 @@ exports.register = async (req, res) => {
   }
 };
 
-
-
 exports.getPendingBrands = async (req, res) => {
   try {
     const pendingBrands = await Brand.find({ status: 'pending' }).populate('user', 'name email');
@@ -78,9 +76,10 @@ exports.updateBrandProfile = async (req, res) => {
   try {
     const brand = await Brand.findOne({ user: req.user.id });
     if (!brand) return res.status(404).json({ message: 'Brand profile not found' });
-
+    const brandLogo = req.file?.path || null;
     const { businessName, website, industry, description, email } = req.body;
-
+    
+    brand.brand_logo = brandLogo || brand.brand_logo; // Use existing logo if not updated
     brand.businessName = businessName;
     brand.website = website;
     brand.category = industry;
@@ -174,7 +173,7 @@ exports.createCampaign = async (req, res) => {
       mediaInfo: parsedMediaInfo,
       products: parsedProducts,
       hashtags,
-      status: 'pending'
+      status: 'active'
     });
 
     console.log('Campaign to be saved:', campaign);

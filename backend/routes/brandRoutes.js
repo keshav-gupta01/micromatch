@@ -3,7 +3,8 @@ const express = require('express');
 const { 
   register,
   getBrandProfile,
-  getPendingBrands, 
+  getPendingBrands,
+  updateBrandProfile,
   approveBrand, 
   rejectBrand, 
   createCampaign,
@@ -17,17 +18,17 @@ const protect = require('../middleware/auth');
 const adminOnly = require('../middleware/adminMiddleware');
 const brandOnly = require('../middleware/brandMiddleware');
 const { get } = require('mongoose');
+const { getEligibleCampaigns } = require('../controllers/influencerControllers');
 
 // brand submits profile
 // brand submits profile with logo upload
 router.post('/register', protect, upload.single('brand_logo'), register);
-
-
+router.post('update',protect,brandOnly,upload.single('brand_logo'),updateBrandProfile); // Update brand profile
 // admin routes
 router.get('/pending', protect, adminOnly, getPendingBrands);
 router.put('/approve/:id', protect, adminOnly, approveBrand);
 router.delete('/reject/:id', protect, adminOnly, rejectBrand);
-router.get('/profile', protect, brandOnly,getBrandProfile); // Get brand profile
+router.get('/getprofile', protect, brandOnly,getBrandProfile); // Get brand profile
 // brand routes
 router.post('/launchCampaign', protect, brandOnly, upload.array('media', 5), createCampaign);
 

@@ -17,9 +17,9 @@ const BusinessProfile = () => {
   useEffect(() => {
     const fetchBusinessProfile = async () => {
       try {
-        const response = await axios.get('/api/brands/profile', {
+        const response = await axios.get('https://micromatch-backend.onrender.com/api/brands/getprofile', {
           headers: {
-            'x-auth-token': localStorage.getItem('token')
+            'x-auth-token': localStorage.getItem('token'),
           },
         });
         const data = response.data;
@@ -49,9 +49,9 @@ const BusinessProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put('/api/brands/update', formData, {
+      await axios.put('https://micromatch-backend.onrender.com/api/brands/update', formData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'x-auth-token': localStorage.getItem('token'),
         },
       });
       navigate('/business-dashboard');
