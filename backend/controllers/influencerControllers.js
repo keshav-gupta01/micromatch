@@ -20,9 +20,9 @@ exports.verifyInstagram = async (req, res) => {
     const response = await axios.get(`${INSTAGRAM_TOKEN_URL}?code=${code}`);
     const access_token = response.data.access_token
     const insta_scoped_id = response.data.insta_scoped_id
-      
+    
     if (!access_token || !insta_scoped_id) {
-      return res.status(400).json({ success:false ,message: 'Instagram verification failed',access_token,insta_scoped_id});
+      return res.status(400).json({ success:false ,message: 'Instagram verification failed',a : access_token,b : insta_scoped_id});
     }
     return res.json({ success: true, access_token, insta_scoped_id });
   } catch (error) {
