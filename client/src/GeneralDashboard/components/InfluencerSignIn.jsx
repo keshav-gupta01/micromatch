@@ -1,200 +1,176 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./InfluencerSignIn.css";
 
-export default function InfluencerSignIn() {
+const InfluencerSignIn = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    gmail: '',
-    contactNo: '',
-    instaId: '',
-    youtubeChannel: '',
-    pincode: '',
-    category: ''
+    name: "",
+    email: "",
+    password: "",
+    category: "",
+    instagramUsername: "",
   });
 
   const [errors, setErrors] = useState({});
   const [allowPermission, setAllowPermission] = useState(false);
-  const [accessToken, setAccessToken] = useState(null);
-  const [instagramId, setInstagramId] = useState(null);
-
-  const categories = [
-    "Fashion & Style", "Beauty & Makeup", "Travel & Adventure", "Fitness & Health",
-    "Food & Cooking", "Technology & Gadgets", "Gaming", "Education & Learning",
-    "Entertainment & Comedy", "Business & Entrepreneurship", "Lifestyle", "Other"
-  ];
+  const [accessToken, setAccessToken] = useState("");
+  const [instagramId, setInstagramId] = useState("");
 
   useEffect(() => {
+    // Load saved form data (if any) when page loads
+    const savedFormData = localStorage.getItem('influencerFormData');
+    if (savedFormData) {
+      setFormData(JSON.parse(savedFormData));
+    }
+
+    // Check if Instagram returned a code
     const queryParams = new URLSearchParams(window.location.search);
     const code = queryParams.get('code');
 
     if (code) {
-      axios
-        .get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
-            headers: {'x-auth-token': localStorage.getItem('token')}
-        })
-        .then(res => {
-          if (res.data.success) {
-            setAllowPermission(true);
-            setAccessToken(res.data.access_token);
-            setInstagramId(res.data.insta_scoped_id);
-            alert("✅ Instagram verified successfully");
-          } else {
-            alert("Instagram verification failed");
-          }
-        })
-        .catch(err => {
-          console.error("Error verifying Instagram:", err);
-          console.log(code)
-          alert("Error connecting Instagram. Please try again.");
-        });
+      axios.get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
+        headers: { 'x-auth-token': localStorage.getItem('token') }
+      })
+      .then(res => {
+        if (res.data.success) {
+          setAllowPermission(true);
+          setAccessToken(res.data.access_token);
+          setInstagramId(res.data.insta_scoped_id);
+          alert("✅ Instagram verified successfully");
+        } else {
+          alert("Instagram verification failed. Please try again.");
+        }
+      })
+      .catch(err => {
+        console.error("Error verifying Instagram:", err);
+        alert("Error connecting Instagram. Please try again.");
+      });
     }
   }, []);
 
+  const validate = () => {
+    let tempErrors = {};
+    if (!formData.name.trim()) tempErrors.name = "Name is required";
+    if (!formData.email.trim()) tempErrors.email = "Email is required";
+    if (!formData.password.trim()) tempErrors.password = "Password is required";
+    if (!formData.category.trim()) tempErrors.category = "Category is required";
+    if (!formData.instagramUsername.trim()) tempErrors.instagramUsername = "Instagram username is required";
+    if (!allowPermission) tempErrors.permission = "Please connect Instagram first.";
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const updatedFormData = { ...formData, [name]: value };
+    setFormData(updatedFormData);
+
+    // Save updated form data to localStorage
+    localStorage.setItem('influencerFormData', JSON.stringify(updatedFormData));
   };
 
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.name) newErrors.name = "Name is required";
-    if (!formData.gmail) newErrors.gmail = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.gmail)) newErrors.gmail = "Email is invalid";
-    if (!formData.contactNo) newErrors.contactNo = "Contact number is required";
-    else if (!/^\d{10}$/.test(formData.contactNo)) newErrors.contactNo = "Contact must be 10 digits";
-    if (!formData.instaId) newErrors.instaId = "Instagram ID is required";
-    if (!formData.youtubeChannel) newErrors.youtubeChannel = "YouTube channel is required";
-    if (!formData.pincode) newErrors.pincode = "Pincode is required";
-    else if (!/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Pincode must be 6 digits";
-    if (!formData.category) newErrors.category = "Please select a category";
-    return newErrors;
-  };
-
-  const handleConnectInstagram = () => {
-    window.location.href = "https://micromatch-flask-server.onrender.com/server/login";
+  const handleInstagramAuth = () => {
+    window.location.href = `https://api.instagram.com/oauth/authorize?client_id=847228190287555&redirect_uri=https://micromatch-frontend.onrender.com/influencer-signin&scope=user_profile,user_media&response_type=code`;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    if (!allowPermission || !accessToken || !instagramId) {
-      alert("Please connect Instagram to continue.");
-      return;
-    }
-
-    try {
-      const res = await axios.post('https://micromatch-backend.onrender.com/api/influencers/register', {
-        ...formData,
-        accessToken,
-        instagramId
-      }, {
-        headers: {
-          'x-auth-token': localStorage.getItem('token')
+    if (validate()) {
+      try {
+        const res = await axios.post("https://micromatch-backend.onrender.com/api/influencers/register", {
+          ...formData,
+          access_token: accessToken,
+          insta_scoped_id: instagramId,
+        });
+        if (res.data.success) {
+          alert("✅ Signup successful!");
+          // Clear localStorage saved form data
+          localStorage.removeItem('influencerFormData');
+          navigate("/influencer-login");
+        } else {
+          alert("Signup failed. Please try again.");
         }
-      });
-
-      alert("Sign-in successful!");
-      setFormData({
-        name: '',
-        gmail: '',
-        contactNo: '',
-        instaId: '',
-        youtubeChannel: '',
-        pincode: '',
-        category: ''
-      });
-      setErrors({});
-      navigate('/influencer-dashboard');
-    } catch (err) {
-      console.error(err);
-      alert("Sign-in failed. Please try again.");
+      } catch (err) {
+        console.error("Signup error:", err);
+        alert("Signup error. Please try again later.");
+      }
+    } else {
+      alert("❌ Please fix the form errors before submitting.");
     }
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-xl">
-        <h2 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-blue-500 to-pink-500 text-transparent bg-clip-text">
-          Influencer Sign In
-        </h2>
+    <div className="influencer-signin-container">
+      <h2>Influencer Sign Up</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={formData.name}
+          onChange={handleChange}
+        />
+        {errors.name && <span className="error">{errors.name}</span>}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {["name", "gmail", "contactNo", "instaId", "youtubeChannel", "pincode"].map(field => (
-            <div key={field}>
-              <label className="block text-sm font-medium text-gray-800 mb-1" htmlFor={field}>
-                {field === "gmail" ? "Email Address" :
-                  field === "contactNo" ? "Contact Number" :
-                  field === "instaId" ? "Instagram ID" :
-                  field === "youtubeChannel" ? "YouTube Channel" :
-                  field === "pincode" ? "Pincode" : "Full Name"}
-              </label>
-              <input
-                type={field === "gmail" ? "email" : field === "youtubeChannel" ? "url" : "text"}
-                name={field}
-                id={field}
-                value={formData[field]}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300"
-                aria-describedby={`${field}-error`}
-                required
-              />
-              {errors[field] && <p id={`${field}-error`} className="text-sm text-red-500">{errors[field]}</p>}
-            </div>
-          ))}
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+        {errors.email && <span className="error">{errors.email}</span>}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-800 mb-1" htmlFor="category">Category</label>
-            <select
-              name="category"
-              id="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300"
-              aria-describedby="category-error"
-              required
-            >
-              <option value="">Select your category</option>
-              {categories.map((cat, idx) => (
-                <option key={idx} value={cat}>{cat}</option>
-              ))}
-            </select>
-            {errors.category && <p id="category-error" className="text-sm text-red-500">{errors.category}</p>}
-          </div>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
+        {errors.password && <span className="error">{errors.password}</span>}
 
-          <div className="pt-2">
-            {!allowPermission ? (
-              <button
-                type="button"
-                onClick={handleConnectInstagram}
-                className="w-full bg-purple-600 text-white font-bold py-3 rounded-lg"
-                aria-label="Connect Instagram"
-              >
-                Connect Instagram
-              </button>
-            ) : (
-              <p className="text-green-600 font-semibold text-sm">✅ Instagram Connected</p>
-            )}
-          </div>
+        <input
+          type="text"
+          name="category"
+          placeholder="Category"
+          value={formData.category}
+          onChange={handleChange}
+        />
+        {errors.category && <span className="error">{errors.category}</span>}
 
-          <div className="pt-4">
-            <button
-              type="submit"
-              disabled={!allowPermission}
-              className={`w-full font-bold py-3 rounded-lg ${allowPermission ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-              aria-label="Submit the form to sign in as influencer"
-            >
-              Sign In as Influencer
-            </button>
-          </div>
-        </form>
-      </div>
+        <input
+          type="text"
+          name="instagramUsername"
+          placeholder="Instagram Username"
+          value={formData.instagramUsername}
+          onChange={handleChange}
+        />
+        {errors.instagramUsername && <span className="error">{errors.instagramUsername}</span>}
+
+        <button
+          type="button"
+          className={`connect-button ${allowPermission ? "connected" : ""}`}
+          onClick={handleInstagramAuth}
+        >
+          {allowPermission ? "Connected ✅" : "Connect with Instagram"}
+        </button>
+        {errors.permission && <span className="error">{errors.permission}</span>}
+
+        <button
+          type="submit"
+          className={`signup-button ${allowPermission ? "" : "disabled"}`}
+          disabled={!allowPermission}
+        >
+          Sign Up
+        </button>
+      </form>
+
+      <p>Already have an account? <Link to="/influencer-login">Login</Link></p>
     </div>
   );
-}
+};
+
+export default InfluencerSignIn;
