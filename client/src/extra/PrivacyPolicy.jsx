@@ -1,12 +1,17 @@
 import { useState } from 'react';
-
 export default function PrivacyPolicy() {
   const [expanded, setExpanded] = useState({});
 
-  const toggleSection = (section) => {
-    setExpanded({
-      ...expanded,
-      [section]: !expanded[section]
+    const toggleSection = (section) => {
+        setExpanded((prevExpanded) => {
+          // If the section is already expanded, collapse it
+          if (prevExpanded[section]) {
+            return { ...prevExpanded, [section]: false };
+          }
+          // Otherwise, collapse all other sections and expand the clicked section
+          const newExpanded = {};
+      newExpanded[section] = true;
+      return newExpanded;
     });
   };
 
@@ -117,7 +122,7 @@ export default function PrivacyPolicy() {
         {
           items: [
             'Depending on your jurisdiction, you may have the right to:',
-            '• Access the personal data we hold about you',
+            '• Access the personal data we hold about you', 
             '• Request correction or deletion of your data',
             '• Object to or restrict certain data processing',
             '• Withdraw consent at any time (e.g., disconnect Meta account)',
@@ -175,48 +180,46 @@ export default function PrivacyPolicy() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto px-6 py-12">
         {/* Header */}
-        <div className="bg-[#96AED0] text-white p-8 rounded-t-lg text-center">
-          <h1 className="text-3xl font-bold">Privacy Policy</h1>
-          <p className="mt-2 italic">Last Updated: [Insert Date]</p>
+        <div className="bg-[#488ae9] text-white p-10 rounded-t-3xl shadow-lg text-center">
+          <h1 className="text-4xl font-extrabold tracking-tight">Privacy Policy</h1>
+          <p className="mt-3 italic text-sm">Last Updated: [Insert Date]</p> 
         </div>
-
-        {/* Introduction */}
-        <div className="bg-white p-8 shadow-md rounded-b-lg">
-          <p className="mb-6">
-            At MicroMatch, we are committed to protecting your personal data and ensuring transparency about how we collect, use, and share information. This Privacy Policy explains how we handle your data when you use our influencer marketing platform.
+        {/* Main Body */}
+        <div className="bg-white p-10 shadow-lg rounded-b-3xl">
+          {/* Intro */}
+          <p className="text-gray-700 text-lg leading-relaxed mb-10">
+            At <span className="font-semibold text-[#488ae9]">MicroMatch</span>, we are committed to protecting your personal data and ensuring transparency about how we collect, use, and share information. This Privacy Policy explains how we handle your data when you use our influencer marketing platform.
           </p>
-
-          {/* Privacy Policy Sections */}
-          <div className="space-y-6">
+          {/* Sections */}
+          <div className="space-y-8">
             {sections.map((section) => (
-              <div key={section.id} className="border-b border-gray-200 pb-4">
+              <div key={section.id} className="border-b border-gray-200 pb-6"> 
                 <button 
                   onClick={() => toggleSection(section.id)}
-                  className="flex justify-between items-center w-full text-left font-medium text-lg py-2 focus:outline-none"
+                  className="flex justify-between items-center w-full text-left focus:outline-none"
                 >
-                  <span className="text-[#96AED0]">{section.title}</span>
+                  <span className="text-2xl font-semibold text-[#488ae9]">{section.title}</span>
                   <svg 
-                    className={`w-5 h-5 text-[#96AED0] transform ${expanded[section.id] ? 'rotate-180' : ''}`}
+                    className={`w-6 h-6 transform transition-transform duration-300 ${expanded[section.id] ? 'rotate-180' : ''}`}
                     fill="none" 
-                    stroke="currentColor" 
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-                
-                {(expanded[section.id] || expanded[section.id] === undefined) && (
-                  <div className="mt-3 pl-4 text-gray-700">
+                {(expanded[section.id]) && (
+                  <div className="mt-4 pl-4 text-gray-600 space-y-5">
                     {section.content.map((contentBlock, contentIdx) => (
-                      <div key={contentIdx} className="mb-4">
+                      <div key={contentIdx}>
                         {contentBlock.subheading && (
-                          <h3 className="font-medium text-gray-800 mb-2">{contentBlock.subheading}</h3>
+                          <h3 className="text-lg font-medium text-gray-800 mb-2">{contentBlock.subheading}</h3>
                         )}
-                        <ul className="space-y-2">
+                        <ul className="list-disc list-inside space-y-1">
                           {contentBlock.items.map((item, itemIdx) => (
-                            <li key={itemIdx}>{item}</li>
+                            <li key={itemIdx} className="text-base">{item}</li>
                           ))}
                         </ul>
                       </div>
@@ -226,26 +229,23 @@ export default function PrivacyPolicy() {
               </div>
             ))}
           </div>
-          
-          {/* Contact Information */}
-          <div className="mt-8 p-4 bg-gray-50 rounded-lg border-l-4 border-[#96AED0]">
-            <p className="font-semibold">Have privacy concerns?</p>
-            <p>
+          {/* Contact Info Box */}
+          <div className="mt-12 p-6 bg-[#f0f8ff] rounded-2xl shadow-md border-l-4 border-[#488ae9]">
+            <p className="text-lg font-semibold mb-2 text-[#488ae9]">Have privacy concerns?</p>
+            <p className="text-gray-700">
               If you have any questions about our Privacy Policy, please contact our privacy team at:
-              <span className="block mt-1 text-[#96AED0] font-medium">📧 privacy@micromatch.com</span>
-            </p>
+              <span className="block mt-2 font-semibold text-[#488ae9]">📧 privacy@micromatch.com</span>
+            </p> 
           </div>
-
           {/* Data Protection Statement */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600">
+          <div className="mt-8 p-6 bg-gray-50 rounded-2xl">
+            <p className="text-sm text-gray-600 leading-relaxed">
               MicroMatch is committed to protecting your privacy and maintaining the security of your personal information. We regularly review our privacy practices to ensure they align with industry standards and legal requirements.
             </p>
           </div>
-
           {/* Footer */}
-          <div className="mt-10 text-center text-gray-500 text-sm">
-            <p>© {new Date().getFullYear()} MicroMatch. All rights reserved.</p>
+          <div className="mt-12 text-center text-gray-400 text-sm">
+            <p>© {new Date().getFullYear()} <span className="font-semibold text-[#488ae9]">MicroMatch</span>. All rights reserved.</p>
           </div>
         </div>
       </div>
