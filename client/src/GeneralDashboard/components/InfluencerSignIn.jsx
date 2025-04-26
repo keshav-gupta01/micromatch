@@ -32,9 +32,7 @@ export default function InfluencerSignIn() {
     if (code) {
       axios
         .get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
-          headers: {
             headers: {'x-auth-token': localStorage.getItem('token')}
-          }
         })
         .then(res => {
           if (res.data.success) {
