@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaFacebook, FaLinkedin, FaTwitter, FaYoutube } from 'react-icons/fa'
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -17,8 +18,12 @@ const Footer = () => {
         <div className="pt-6 border-t border-gray-200">
           <ul className="flex flex-wrap justify-center sm:justify-between gap-4 sm:gap-8 text-gray-600">
             <li className="cursor-pointer hover:text-gray-900" onClick={scrollToTop}>Home</li>
-            <li className="cursor-pointer hover:text-gray-900">Terms & Conditions</li>
-            <li className="cursor-pointer hover:text-gray-900">Privacy Policy</li>
+            <li className="cursor-pointer hover:text-gray-900">
+                <Link to="/terms-conditions">Terms and Conditions</Link>
+              </li>
+              <li className="cursor-pointer hover:text-gray-900">
+                <Link to="/privacy-policy">Privacy Policy</Link>
+              </li>
             <li className="cursor-pointer hover:text-gray-900">Support</li>
             <li className="cursor-pointer hover:text-gray-900">Contact</li>
           </ul>

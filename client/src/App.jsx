@@ -10,8 +10,8 @@ import CampaignsBrowsePage from './InfluencerDashboard/components/CampaignsBrows
 import AdminDashboard from './AdminDashboard/AdminDashboard.jsx';
 import BusinessDashboard from './BusinessDashboard/BusinessDashboard.jsx';
 import LandingPage from './LandingPage/landingPage.jsx';
-import TermsAndCondition from './extra/termsAndCondition.jsx';
-import PrivacyPolicy from './extra/privacyPolicy.jsx';
+import TermsAndConditions from './extra/TermsAndConditions.jsx';
+import PrivacyPolicy from './extra/PrivacyPolicy.jsx';
 import Guidelines from './InfluencerDashboard/components/Guidelines.jsx';
 import Settings from './InfluencerDashboard/components/Settings.jsx';
 import BusinessSettings from './BusinessDashboard/components/Settings.jsx';
@@ -36,8 +36,8 @@ function App() {
         <Route path="/influencer-dashboard/settings" element={<Settings />} />
         <Route path="/business-dashboard" element={<BusinessDashboard />} />
         <Route path="/guidelines/:campaignId" element={<Guidelines />} />
-        <Route path="/Terms-condition" element={<TermsAndCondition />} />        
-        <Route path="/Privacy-Policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-conditions" element={<TermsAndConditions />} />        
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
     </div>
   );
