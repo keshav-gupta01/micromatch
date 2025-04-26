@@ -16,7 +16,7 @@ const BusinessDashboard = () => {
 
   const user = {
     name: "Business User",
-    avatar: "/api/placeholder/80/80",
+    avatar: "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg",
     role: "Business"
   };
 
