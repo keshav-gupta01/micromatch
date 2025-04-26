@@ -10,7 +10,7 @@ const INSTAGRAM_TOKEN_URL = "https://micromatch-flask-server.onrender.com/server
 
 // Function to handle Instagram verification (Get Access Token and Instagram ID)
 exports.verifyInstagram = async (req, res) => {
-  const { code } = req.query;
+  const { code } = req.query.code;
 
   if (!code) {
     return res.status(400).json({ success: false, message: 'Instagram code is missing' });
@@ -18,13 +18,13 @@ exports.verifyInstagram = async (req, res) => {
 
   try {
     const response = await axios.get(`${INSTAGRAM_TOKEN_URL}?code=${code}`);
-    const { accessToken, instagramId } = response.data;
+    const { access_token, insta_scoped_id } = response.data;
 
-    if (!accessToken || !instagramId) {
+    if (!access_token || !insta_scoped_id) {
       return res.status(400).json({ success: false, message: 'Instagram verification failed' });
     }
 
-    return res.json({ success: true, accessToken, instagramId });
+    return res.json({ success: true, access_token, insta_scoped_id });
   } catch (error) {
     console.error('Error verifying Instagram:', error);
     return res.status(500).json({ success: false, message: 'Instagram verification error', error: error.message });
@@ -33,9 +33,9 @@ exports.verifyInstagram = async (req, res) => {
 
 // Register a new influencer
 exports.registerInfluencer = async (req, res) => {
-  const { name, gmail, contactNo, instaId, youtubeChannel, pincode, category, accessToken, instagramId } = req.body;
+  const { name, gmail, contactNo, instaId, youtubeChannel, pincode, category, access_token, insta_scoped_id } = req.body;
 
-  if (!accessToken || !instagramId) {
+  if (!access_token || !insta_scoped_id) {
     return res.status(400).json({ success: false, message: 'Instagram authentication required' });
   }
 
@@ -54,8 +54,8 @@ exports.registerInfluencer = async (req, res) => {
       youtubeChannel,
       pincode,
       category,
-      accessToken,
-      instagramId
+      access_token,
+      insta_scoped_id
     });
 
     await newInfluencer.save();
