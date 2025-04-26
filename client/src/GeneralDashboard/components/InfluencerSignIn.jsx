@@ -28,6 +28,7 @@ export default function InfluencerSignIn() {
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const code = queryParams.get('code');
+    console.log(code)
     
 
     if (code) {
@@ -40,8 +41,8 @@ export default function InfluencerSignIn() {
         .then(res => {
           if (res.data.success) {
             setAllowPermission(true);
-            setAccessToken(res.data.accessToken);
-            setInstagramId(res.data.instagramId);
+            setAccessToken(res.data.access_token);
+            setInstagramId(res.data.insta_scoped_id);
             alert("✅ Instagram verified successfully");
           } else {
             alert("Instagram verification failed");
