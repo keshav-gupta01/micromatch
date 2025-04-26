@@ -26,7 +26,7 @@ const InfluencerSignIn = () => {
     }
 
     // Check if Instagram returned a code
-    const queryParams = new URLSearchParams(window.location.search);
+    const queryParams = new URLSearchParams(window.location.search);z
     const code = queryParams.get('code');
 
     console.log("Instagram Code from URL:", code); // Log the code from URL
