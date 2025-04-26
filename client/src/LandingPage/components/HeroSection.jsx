@@ -29,7 +29,7 @@ const HeroSection = () => {
                 <h1 className='md:leading-[42px] py-2 md:text-3xl text-lg font-semibold'>
                 MicroMatch makes influencer marketing smarter, faster, and more effective. Discover the perfect <span className='text-[#398ef7]'>micro-influencers</span> to elevate your brand.
                 </h1>
-                <p className='py-2 text-lg text-gray-900'>Various versions have evolved over the years</p>
+                <p className='py-2 text-lg text-gray-900'>Witness a New Era of Influencer Marketing</p>
             </div>
             <img src={heroImg} alt="hero" className='md:order-last order-first'/>
         </div>

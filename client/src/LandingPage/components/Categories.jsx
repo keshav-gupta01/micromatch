@@ -9,7 +9,7 @@ const Categories = () => {
         <div className='md:max-w-[1100px] m-auto max-w-[400px]'>
             <h1 className='md:leading-[72px] text-xl font-bold'>Our <span className='text-[#104581]'>Popular Categories</span></h1>
             <p className="text-lg text-gray-600">
-                Various versions have evolved over the years
+            Witness a New Era of Influencer Marketing
             </p>
             <div className='grid md:grid-cols-3 py-12 gap-4'>
                 <CategoryCard icon={<BsVectorPen size={30}/>} title={'Design'}/>

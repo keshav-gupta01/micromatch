@@ -44,7 +44,7 @@ const Courses = () => {
     <section className='w-full bg-white py-24 p-4'>
         <div className='md:max-w-[1100px] m-auto max-w-[400px]'>
             <h1 className='py-4 text-3xl font-bold'>Most Popular <span className='text-[#104581]'>Influencers</span></h1>
-            <p className='text-[#6D737A] py-3'>Various versions have evolved over the years, sometimes by accident.</p>
+            <p className='text-[#6D737A] py-3'>Witness a New Era of Influencer Marketing</p>
           </div>
         <div className='md:max-w-[1100px] m-auto max-w-[400px] gap-5'>
           <Slider {...settings} className='px-5'>

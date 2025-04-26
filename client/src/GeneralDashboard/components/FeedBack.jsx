@@ -43,7 +43,7 @@ const FeedBack = () => {
     <section className='w-full bg-white py-24 p-4'>
         <div className='md:max-w-[1100px] m-auto max-w-[400px]'>
         <h1 className='py-4 text-3xl font-bold'>Students <span className='text-[#398ef7]'>Feed back</span></h1>
-            <p className='text-[#6D737A] py-2'>Various versions have evolved over the years, sometimes by accident.</p>
+            <p className='text-[#6D737A] py-2'>Witness a New Era of Influencer Marketing</p>
             <Slider {...settings}>
                 <FeedBackCard/>
                 <FeedBackCard/>

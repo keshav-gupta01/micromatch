@@ -12,7 +12,7 @@ const CTA = () => {
             <h1 className='md:leading-[42px] py-8 md:text-3xl text-lg font-semibold'>
               Join one of the best <span className='text-[#104581]'>platforms for Influencer</span> Marketing from all over the world
             </h1>
-            <p className='py-2 text-lg text-gray-900'>Various versions have evolved over the years</p>
+            <p className='py-2 text-lg text-gray-900'>Witness a New Era of Influencer Marketing</p>
             <Link to="/signup">
               <button className='max-[780px]:w-full px-8 text-white py-3 bg-[#104581] rounded-lg hover:bg-[#0d3a6d] transition-all'>
                 Sign up for free
