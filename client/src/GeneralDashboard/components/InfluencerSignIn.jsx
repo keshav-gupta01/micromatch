@@ -50,6 +50,7 @@ export default function InfluencerSignIn() {
         })
         .catch(err => {
           console.error("Error verifying Instagram:", err);
+          console.log(code)
           alert("Error connecting Instagram. Please try again.");
         });
     }
