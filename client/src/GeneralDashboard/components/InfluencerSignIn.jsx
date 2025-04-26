@@ -28,26 +28,27 @@ const InfluencerSignIn = () => {
     // Check if Instagram returned a code
     const queryParams = new URLSearchParams(window.location.search);
     const code = queryParams.get('code');
-    console.log('Instagram auth code:', code); // Log the code to check if it is passed
+
+    console.log("Instagram Code from URL:", code); // Log the code from URL
 
     if (code) {
       axios.get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
         headers: { 'x-auth-token': localStorage.getItem('token') }
       })
       .then(res => {
+        console.log("Instagram Verification Response:", res); // Log the response
+
         if (res.data.success) {
           setAllowPermission(true);
           setAccessToken(res.data.access_token);
           setInstagramId(res.data.insta_scoped_id);
-          localStorage.setItem('instagramAccessToken', res.data.access_token);  // Save Instagram token
-          localStorage.setItem('instagramId', res.data.insta_scoped_id); // Save Instagram ID
           alert("✅ Instagram verified successfully");
         } else {
           alert("Instagram verification failed. Please try again.");
         }
       })
       .catch(err => {
-        console.error("Error verifying Instagram:", err);
+        console.error("Error verifying Instagram:", err); // Log the error
         alert("Error connecting Instagram. Please try again.");
       });
     }
@@ -61,7 +62,10 @@ const InfluencerSignIn = () => {
     if (!formData.category.trim()) tempErrors.category = "Category is required";
     if (!formData.instagramUsername.trim()) tempErrors.instagramUsername = "Instagram username is required";
     if (!allowPermission) tempErrors.permission = "Please connect Instagram first.";
+
     setErrors(tempErrors);
+    console.log("Validation Errors:", tempErrors); // Log the errors
+
     return Object.keys(tempErrors).length === 0;
   };
 
@@ -72,36 +76,44 @@ const InfluencerSignIn = () => {
 
     // Save updated form data to localStorage
     localStorage.setItem('influencerFormData', JSON.stringify(updatedFormData));
+    console.log("Updated Form Data:", updatedFormData); // Log the updated form data
   };
 
   const handleInstagramAuth = () => {
+    console.log("Redirecting to Instagram for authentication...");
     window.location.href = `https://api.instagram.com/oauth/authorize?client_id=847228190287555&redirect_uri=https://micromatch-frontend.onrender.com/influencer-signin&scope=user_profile,user_media&response_type=code`;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form Submitted, Validating...");
+
     if (validate()) {
+      console.log("Validation Passed, Submitting Form...");
+
       try {
         const res = await axios.post("https://micromatch-backend.onrender.com/api/influencers/register", {
           ...formData,
           access_token: accessToken,
           insta_scoped_id: instagramId,
         });
+
+        console.log("Sign-Up Response:", res); // Log the response
+
         if (res.data.success) {
           alert("✅ Signup successful!");
           // Clear localStorage saved form data
           localStorage.removeItem('influencerFormData');
-          localStorage.removeItem('instagramAccessToken'); // Clear saved Instagram token
-          localStorage.removeItem('instagramId'); // Clear saved Instagram ID
           navigate("/influencer-login");
         } else {
           alert("Signup failed. Please try again.");
         }
       } catch (err) {
-        console.error("Signup error:", err);
+        console.error("Signup error:", err); // Log the error
         alert("Signup error. Please try again later.");
       }
     } else {
+      console.log("Validation Failed");
       alert("❌ Please fix the form errors before submitting.");
     }
   };
