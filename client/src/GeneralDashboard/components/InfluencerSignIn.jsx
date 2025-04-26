@@ -104,7 +104,7 @@ const InfluencerSignIn = () => {
           alert("✅ Signup successful!");
           // Clear localStorage saved form data
           localStorage.removeItem('influencerFormData');
-          navigate("/influencer-login");
+          navigate("/login");
         } else {
           alert("Signup failed. Please try again.");
         }
