@@ -114,7 +114,7 @@ const BusinessProfile = () => {
             </select>
           </div>
 
-          <TextAreaField label="Description" name="description" value={formData.description} onChange={handleChange} />
+          <InputField label="Description" name="description" value={formData.description} onChange={handleChange} />
           <InputField label="Contact Email" name="email" type="email" value={formData.email} onChange={handleChange} icon={<FaEnvelope className="text-gray-500" />} />
 
           <div className="text-right">
