@@ -55,8 +55,6 @@ Soon, businesses and influencers will be able to handle payments, bonuses, and r
 - **Database**: MongoDB
 - **ML/AI**: Python (for fake influencer detection)
 - **APIs**: Meta Graph API (for campaign analytics)
-- **Auth & Security**: JWT, bcrypt
-- **Hosting**: [Your chosen hosting platform]
 
 ---
 
