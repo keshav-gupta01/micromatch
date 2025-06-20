@@ -72,6 +72,16 @@ We aim to **democratize influencer marketing** by empowering businesses of all s
 
 ---
 
+## ✨ Contributors
+
+Thanks to the following people who have contributed to this project:
+
+1. Priyansh Rathore [https://github.com/robiophantom]
+2. Gaurav Saklani [https://github.com/git-gauravtech]
+3. Keshav Gupta [https://github.com/keshav-gupta01]
+4. Pratham Negi [https://github.com/negi-5905]
+
+
 ## 🙌 Contributing
 
 We welcome all contributions
