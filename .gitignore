@@ -10,3 +10,12 @@ client/build/
 
 # OS files
 .DS_Store
+
+# env files
+flaskServer/secrets.env
+flaskServer/__pycache__/
+flaskServer/*.pyc
+flaskServer/*.pyo
+flaskServer/.env
+flaskServer/venv/
+flaskServer/.env.*

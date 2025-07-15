@@ -1,0 +1,10 @@
+flask
+python-dotenv
+pyjwt
+requests
+pytz
+logging
+statistics
+pandas
+scikit-learn
+joblib
