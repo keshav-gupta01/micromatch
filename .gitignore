@@ -19,3 +19,6 @@ flaskServer/*.pyo
 flaskServer/.env
 flaskServer/venv/
 flaskServer/.env.*
+
+# Flask server
+flaskServer
