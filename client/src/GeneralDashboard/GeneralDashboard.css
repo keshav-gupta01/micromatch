@@ -101,17 +101,6 @@
   box-shadow: var(--card-shadow);
 }
 
-.feedback-container .feedback-card:last-child {
-  margin-right: 0px;
-}
-
-.feedback-card {
-  background: transparent;
-}
-
-.feedback-card:hover {
-  background: #f9f9f9;
-}
 
 .blue__gradient {
   background: linear-gradient(180deg, rgba(173, 216, 230, 0) 0%, #add8e6 100%);
