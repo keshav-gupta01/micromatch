@@ -411,7 +411,7 @@ export default function InfluencerSignIn() {
       });
 
       toast.success("Sign-Up successful!");
-      localStorage.removeItem('formData');
+      localStorage.removeItem('influencerFormData');
       setFormData({
         name: '',
         gmail: '',
@@ -593,7 +593,7 @@ export default function InfluencerSignIn() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={!allowPermission}
+              disabled={false}
               className={`w-full py-3 rounded-lg transition duration-200 ${
                 allowPermission
                   ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
