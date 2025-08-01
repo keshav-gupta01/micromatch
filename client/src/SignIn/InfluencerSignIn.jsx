@@ -400,7 +400,7 @@ export default function InfluencerSignIn() {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/influencers/register', {
+      const res = await axios.post('https://micromatch-backend.onrender.com/api/influencers/register', {
         ...formData,
         accessToken,
         instagramId
