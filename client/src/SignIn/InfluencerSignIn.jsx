@@ -40,8 +40,8 @@
 //         .then(res => {
 //           if (res.data.success) {
 //             setAllowPermission(true);
-//             setAccessToken(res.data.accessToken);
-//             setInstagramId(res.data.instagramId);
+//             setAccessToken(res.data.access_token);
+//             setInstagramId(res.data.insta_scoped_id);
 //             toast.success("Instagram verified successfully");
 //           } else {
 //             toast.error("Instagram verification failed");
@@ -347,8 +347,8 @@ export default function InfluencerSignIn() {
         if (res.data.success) {
           console.log(res.data)
           setAllowPermission(true);
-          setAccessToken(res.data.accessToken);
-          setInstagramId(res.data.instagramId);
+          setAccessToken(res.data.access_token);
+          setInstagramId(res.data.insta_scoped_id);
           toast.success("Instagram verified successfully");
           
         } else {
