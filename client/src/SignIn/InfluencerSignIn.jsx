@@ -345,6 +345,7 @@ export default function InfluencerSignIn() {
       })
       .then(res => {
         if (res.data.success) {
+          console.log(res.data)
           setAllowPermission(true);
           setAccessToken(res.data.accessToken);
           setInstagramId(res.data.instagramId);
