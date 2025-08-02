@@ -9,8 +9,8 @@ const InfluencerSchema = new mongoose.Schema(
     youtubeChannel: { type: String },
     pincode: { type: String },
     category: { type: String },
-    accessToken: { type: String, required: true },
-    instagramId: { type: String, required: true },
+    access_token: { type: String, required: true },
+    insta_scoped_id: { type: String, required: true },
     verified: { type: Boolean, default: false },
     verfied_Status:{type:String,default:"Verification will be started, we will update you when it is done"},
     // New fields to track campaigns
