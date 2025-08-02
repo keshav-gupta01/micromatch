@@ -35,7 +35,11 @@ exports.verifyInstagram = async (req, res) => {
  *  Register a new influencer
  ----------------------------*/
 exports.registerInfluencer = async (req, res) => {
-  const { name, gmail, contactNo, instaId, youtubeChannel, pincode, category, access_token, insta_scoped_id } = req.body;
+  const {
+    name, gmail, contactNo, instaId,
+    youtubeChannel, pincode, category,
+    access_token, insta_scoped_id
+  } = req.body;
 
   if (!access_token || !insta_scoped_id) {
     return res.status(400).json({ success: false, message: 'Instagram authentication required' });
@@ -63,10 +67,23 @@ exports.registerInfluencer = async (req, res) => {
     await newInfluencer.save();
     await User.findByIdAndUpdate(newInfluencer.user, { role: 'influencer' });
 
-    res.status(201).json({ success: true, message: 'Influencer registered successfully', influencer: newInfluencer });
+    const isVerified = await verifyInfluencer(newInfluencer._id);
+    const updatedInfluencer = await Influencer.findById(newInfluencer._id); // fetch updated fields
+
+    res.status(201).json({
+      success: true,
+      message: isVerified? 'Influencer registered and verified successfully': 'Influencer registered, but verification failed',
+      influencer: updatedInfluencer,
+      isVerified: updatedInfluencer.verified
+    });
+
   } catch (error) {
     console.error('Error registering influencer:', error);
-    res.status(500).json({ success: false, message: 'Error registering influencer', error: error.message });
+    res.status(500).json({
+      success: false,
+      message: 'Error registering influencer',
+      error: error.message
+    });
   }
 };
 
@@ -170,7 +187,6 @@ exports.verifyInfluencerProfile = async (req, res) => {
   try {
     const influencerId = req.params.id;
     const isVerified = await verifyInfluencer(influencerId);
-
     res.json({
       success: true,
       isVerified,

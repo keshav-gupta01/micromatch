@@ -1,7 +1,8 @@
+// ✅ InfluencerSignIn.jsx - handleSubmit updated with verification check
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'react-toastify'; // Added toast for consistent notifications
+import { toast } from 'react-toastify';
 
 export default function InfluencerSignIn() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export default function InfluencerSignIn() {
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const code = queryParams.get('code');
-  
+
     if (code) {
       axios
         .get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
@@ -40,8 +41,8 @@ export default function InfluencerSignIn() {
         .then(res => {
           if (res.data.success) {
             setAllowPermission(true);
-            setAccessToken(res.data.accessToken);
-            setInstagramId(res.data.instagramId);
+            setAccessToken(res.data.access_token);
+            setInstagramId(res.data.insta_scoped_id);
             toast.success("Instagram verified successfully");
           } else {
             toast.error("Instagram verification failed");
@@ -53,7 +54,7 @@ export default function InfluencerSignIn() {
         });
     }
   }, []);
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -94,26 +95,26 @@ export default function InfluencerSignIn() {
     try {
       const res = await axios.post('https://micromatch-backend.onrender.com/api/influencers/register', {
         ...formData,
-        accessToken,
-        instagramId
+        access_token: accessToken,
+        insta_scoped_id: instagramId
       }, {
         headers: {
           'x-auth-token': localStorage.getItem('token')
         }
       });
 
-      toast.success("Sign-in successful!");
-      setFormData({
-        name: '',
-        gmail: '',
-        contactNo: '',
-        instaId: '',
-        youtubeChannel: '',
-        pincode: '',
-        category: ''
-      });
-      setErrors({});
-      navigate('/influencer-dashboard');
+      if (res.data.success) {
+        if (res.data.isVerified) {
+          toast.success("Registration & verification successful!");
+          navigate('/influencer-dashboard');
+        } else {
+          toast.info("Registered, but verification failed. Login will be allowed once verified.");
+          navigate('/login');
+        }
+      } else {
+        toast.error(res.data.message || "Registration failed.");
+      }
+
     } catch (err) {
       console.error(err);
       toast.error("Sign-in failed. Please try again.");
