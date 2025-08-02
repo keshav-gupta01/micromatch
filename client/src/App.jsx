@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Signup from './signup/signup.jsx';
 import Login from './login/login.jsx';
+import GeneralDashboard from './GeneralDashboard/GeneralDashboard.jsx';
 import InfluencerSignIn from './SignIn/InfluencerSignIn.jsx';
 import BrandSignIn from './SignIn/BrandSignIn.jsx';
 import InfluencerDashboard from './InfluencerDashboard/InfluencerDashboard.jsx';
@@ -16,15 +17,14 @@ import Settings from './InfluencerDashboard/components/Settings.jsx';
 import BusinessSettings from './BusinessDashboard/components/Settings.jsx';
 import BusinessProfile from './BusinessDashboard/components/Profile.jsx';
 import InfluencerProfile from './InfluencerDashboard/components/Profile.jsx';
-import { Toaster } from 'sonner';
 function App() {
   return (
     <div>
       <Routes>
-        <Toaster />
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/general-dashboard" element={<GeneralDashboard />} />
         <Route path = "/influencer-signin" element = {<InfluencerSignIn/>}></Route>
         <Route path = "/brand-signin" element = {<BrandSignIn/>}></Route>
         <Route path = "/influencer-dashboard" element = {<InfluencerDashboard/>}></Route>

@@ -301,7 +301,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'sonner'; // Added toast for consistent notifications
+import { toast } from 'react-toastify'; // Added toast for consistent notifications
 
 export default function InfluencerSignIn() {
   const navigate = useNavigate();
