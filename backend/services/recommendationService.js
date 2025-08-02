@@ -231,7 +231,7 @@ exports.verifyInfluencer = async (influencerId) => {
       influencerId,
       { 
         verified: !isFake,
-        verified_status: description 
+        verified_status: !isFake? 'Influencer verified successfully': 'verification failed :' + description 
       }
     );
     
