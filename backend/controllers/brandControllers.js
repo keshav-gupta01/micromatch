@@ -3,7 +3,8 @@ const User = require('../models/User');
 const Campaign = require('../models/campaignProfile');
 const { cloudinary } = require('../config/cloudinary');
 const { getRecommendedInfluencers, sendCampaignInvitation } = require('../services/recommendationService');
-const mongoose = require('mongoose'); // Import mongoose to convert string IDs to ObjectId
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 exports.register = async (req, res) => {
@@ -20,7 +21,7 @@ exports.register = async (req, res) => {
       description
     } = req.body;
 
-    const brandLogo = req.file?.path || null; // single image URL from Cloudinary
+    const brandLogo = req.file?.path || null;
 
     const newBrand = new Brand({
       user: req.user.id,
@@ -59,13 +60,15 @@ exports.getBrandProfile = async (req, res) => {
   try {
     const brand = await Brand.findOne({ user: req.user.id });
     if (!brand) return res.status(404).json({ message: 'Brand profile not found' });
+    
     const data = {
-    logo: brand.brand_logo,
-    businessName: brand.businessName,
-    website: brand.website,
-    industry: brand.category,
-    description: brand.description,
-    email: brand.email }
+      logo: brand.brand_logo,
+      businessName: brand.businessName,
+      website: brand.website,
+      industry: brand.category,
+      description: brand.description,
+      email: brand.email
+    };
     res.json(data);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching brand profile', error: err.message });
@@ -76,10 +79,11 @@ exports.updateBrandProfile = async (req, res) => {
   try {
     const brand = await Brand.findOne({ user: req.user.id });
     if (!brand) return res.status(404).json({ message: 'Brand profile not found' });
+    
     const brandLogo = req.file?.path || null;
     const { businessName, website, industry, description, email } = req.body;
     
-    brand.brand_logo = brandLogo || brand.brand_logo; // Use existing logo if not updated
+    brand.brand_logo = brandLogo || brand.brand_logo;
     brand.businessName = businessName;
     brand.website = website;
     brand.category = industry;
@@ -99,6 +103,7 @@ exports.approveBrand = async (req, res) => {
   try {
     const brand = await Brand.findById(req.params.id);
     if (!brand) return res.status(404).json({ message: 'Brand not found' });
+    
     brand.status = 'approved';
     await brand.save();
     res.json({ message: 'Brand approved and role updated' });
@@ -135,7 +140,8 @@ exports.createCampaign = async (req, res) => {
       location,
       products,
       hashtags,
-      mediaInfo
+      mediaInfo,
+      campaignRange  // Added this field
     } = req.body;
 
     // Validate required fields
@@ -158,6 +164,14 @@ exports.createCampaign = async (req, res) => {
     let parsedProducts = products ? JSON.parse(products) : [];
     let parsedMediaInfo = mediaInfo ? JSON.parse(mediaInfo) : [];
 
+    // Set camp_type based on campaignRange
+    let camp_type = 0; // default
+    if (campaignRange === 'local') {
+      camp_type = 1;
+    } else if (campaignRange === 'regional') {
+      camp_type = 2;
+    }
+
     // Create campaign
     const campaign = new Campaign({
       brand: brand._id,
@@ -173,6 +187,7 @@ exports.createCampaign = async (req, res) => {
       mediaInfo: parsedMediaInfo,
       products: parsedProducts,
       hashtags,
+      camp_type, // Added this field
       status: 'active'
     });
 
@@ -180,19 +195,20 @@ exports.createCampaign = async (req, res) => {
     
     await campaign.save();
     brand.uploaded_campaigns.push(campaign._id);
-    // NEW CODE: Automatically find recommended influencers
+    await brand.save(); // Save brand after adding campaign
+
+    // Automatically find recommended influencers
     try {
       console.log('Finding recommended influencers for campaign:', campaign._id);
       const influencers = await getRecommendedInfluencers(campaign._id);
       
-      // Update campaign with matched influencers
-      campaign.matchedInflxuencers = influencers;
+      // Update campaign with matched influencers (FIXED TYPO)
+      campaign.matchedInfluencers = influencers;
       await campaign.save();
       
       console.log(`Found ${influencers.length} matched influencers`);
       
-      // Optionally, you can also automatically send invitations here
-      // Uncomment the following block if you want automatic invitations
+      // Send invitations to matched influencers
       console.log('Sending invitations to matched influencers');
       const results = [];
       for (const influencerId of influencers) {
@@ -257,73 +273,28 @@ exports.findRecommendedInfluencers = async (req, res) => {
   }
 };
 
-// Send invitation emails to matched influencers
-// exports.sendCampaignInvitations = async (req, res) => {
-//   try {
-//     const campaignId = req.params.campaignId;
-//     const campaign = await Campaign.findById(campaignId);
-    
-//     if (!campaign) {
-//       return res.status(404).json({ 
-//         success: false, 
-//         message: 'Campaign not found' 
-//       });
-//     }
-    
-//     if (campaign.matchedInfluencers.length === 0) {
-//       return res.status(400).json({ 
-//         success: false, 
-//         message: 'No matched influencers for this campaign' 
-//       });
-//     }
-    
-//     // Send invitations with delay between each
-//     const results = [];
-//     for (const influencerId of campaign.matchedInfluencers) {
-//       try { 
-//         await sendCampaignInvitation(influencerId, campaignId);
-//         results.push({ influencerId, status: 'success' });
-//       } catch (err) {
-//         results.push({ influencerId, status: 'failed', error: err.message });
-//       }
-      
-//       // Wait 15 seconds before sending the next email
-//       await delay(15000);
-//     }
-    
-//     res.json({ 
-//       success: true, 
-//       message: 'Campaign invitations sent',
-//       results 
-//     });
-//   } catch (error) {
-//     console.error('Error sending campaign invitations:', error);
-//     res.status(500).json({ 
-//       success: false, 
-//       message: 'Error sending campaign invitations',
-//       error: error.message 
-//     });
-//   }
-// };
-
 // Get campaign analytics
 exports.getCampaignAnalytics = async (req, res) => {
   try {
     const campaignId = req.params.campaignId;
-    const campaign = await Campaign.findById(campaignId)
+    const campaign = await Campaign.findById(campaignId);
+    
     if (!campaign) {
       return res.status(404).json({ 
         success: false, 
         message: 'Campaign not found' 
       });
     }
-    const completedInfluencers = campaign.campaignAnalyticsSchema.length;
-    const views = 0, reach = 0, shares = 0;
-    for (const camapana of campaign.campaignAnalyticsSchema) {
-      views += camapana.views;
-      reach += camapana.reach;
-      shares += camapana.shares;
+    
+    const completedInfluencers = campaign.campaignAnalytics.length; // FIXED FIELD NAME
+    let views = 0, reach = 0, shares = 0;
+    
+    for (const analytics of campaign.campaignAnalytics) { // FIXED FIELD NAME
+      views += analytics.views || 0;
+      reach += analytics.reach || 0;
+      shares += analytics.shares || 0;
     }
+    
     res.json({ 
       success: true, 
       campaign: {
@@ -340,5 +311,50 @@ exports.getCampaignAnalytics = async (req, res) => {
       message: 'Error getting campaign analytics',
       error: error.message 
     });
+  }
+};
+
+exports.passwordchange = async (req, res) => {
+  try {
+    const BrandId = req.params.id;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!BrandId || BrandId === 'null') {
+      return res.status(400).json({ success: false, message: 'Invalid brand ID' });
+    }
+
+    const brand = await Brand.findById(BrandId).lean();
+    if (!brand) return res.status(404).json({ success: false, message: 'brand not found' });
+
+    const user = await User.findById(brand.user);
+    if (!user) return res.status(404).json({ success: false, message: 'User account not found' });
+
+    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    await User.findByIdAndUpdate(brand.user, { password: hashedNewPassword });
+
+    res.json({ success: true, message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ success: false, message: 'Error changing password' });
+  }
+};
+
+exports.getbrandByUserId = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const brand = await Brand.findOne({ user: userId }).lean();
+    if (!brand) {
+      return res.status(404).json({ success: false, message: 'brand profile not found for this user' });
+    }
+
+    res.json({ success: true, brand });
+  } catch (error) {
+    console.error('Error retrieving brand profile by user ID:', error);
+    res.status(500).json({ success: false, message: 'Error retrieving brand profile', error: error.message });
   }
 };

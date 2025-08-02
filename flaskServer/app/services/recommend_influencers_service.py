@@ -16,14 +16,20 @@ def get_lat_lon(pincode):
 
 # Haversine formula to calculate distance
 def haversine(lat1, lon1, lat2, lon2):
-    R = 6371  # Earth radius in km
-    phi1 = math.radians(lat1)
-    phi2 = math.radians(lat2)
-    dphi = math.radians(lat2 - lat1)
-    dlambda = math.radians(lon2 - lon1)
-    a = math.sin(dphi / 2)**2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2)**2
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    return R * c
+    if any(coord is None for coord in [lat1, lon1, lat2, lon2]):
+        return float('inf')  # Return a large number for invalid coordinates
+    
+    try:
+        R = 6371  # Earth radius in km
+        phi1 = math.radians(float(lat1))
+        phi2 = math.radians(float(lat2))
+        dphi = math.radians(float(lat2) - float(lat1))
+        dlambda = math.radians(float(lon2) - float(lon1))
+        a = math.sin(dphi / 2)**2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2)**2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        return R * c
+    except (TypeError, ValueError):
+        return float('inf')
 
 # Fetch followers count using access token
 def get_followers_count(access_token):
@@ -60,11 +66,20 @@ def get_rank_influencers(campaign_data, influencers):
 
         if use_location:
             inf_lat, inf_long = get_lat_lon(inf_pin)
-            dist = haversine(camp_lat, camp_long, inf_lat, inf_long)
-            proximity_score = 1 / (1 + dist)
-            score = proximity_score * location_weight + inf_followers * follower_weight
+            
+            # Check if we have valid coordinates for both campaign and influencer
+            if (camp_lat is not None and camp_long is not None and 
+                inf_lat is not None and inf_long is not None):
+                dist = haversine(camp_lat, camp_long, inf_lat, inf_long)
+                proximity_score = 1 / (1 + dist)
+                score = proximity_score * location_weight + inf_followers * follower_weight
+            else:
+                # If coordinates are missing, fall back to followers-only scoring
+                print(f"Warning: Missing coordinates for campaign pincode {campaign_pincode} or influencer pincode {inf_pin}")
+                score = inf_followers * follower_weight
         else:
             score = inf_followers  # Only followers count if no pincode
+
 
         weighted_map.append((score, inf_id))
 
