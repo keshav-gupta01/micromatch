@@ -12,8 +12,7 @@ export default function BrandSignIn() {
     email: '',
     phoneNo: '',
     address: '',
-    websiteOrSocialMedia: '',
-    brandLogo: null, // For brand logo file
+    websiteOrSocialMedia: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -52,15 +51,6 @@ export default function BrandSignIn() {
     });
   };
 
-  // Handle file input for brand logo
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setFormData({
-      ...formData,
-      brandLogo: file
-    });
-  };
-
   const validate = () => {
     const newErrors = {};
 
@@ -74,7 +64,6 @@ export default function BrandSignIn() {
     else if (!/^\d{10}$/.test(formData.phoneNo)) newErrors.phoneNo = "Phone number must be 10 digits";
     if (!formData.address) newErrors.address = "Registered business address is required";
     if (!formData.websiteOrSocialMedia) newErrors.websiteOrSocialMedia = "Website or social media link is required";
-    if (!formData.brandLogo) newErrors.brandLogo = "Brand logo is required";
 
     return newErrors;
   };
@@ -91,26 +80,12 @@ export default function BrandSignIn() {
     setErrors({});
     console.log("Form submitted:", formData);
 
-    // Create FormData to handle file upload
-    const formDataToSend = new FormData();
-    formDataToSend.append('businessName', formData.businessName);
-    formDataToSend.append('legalEntityName', formData.legalEntityName);
-    formDataToSend.append('businessType', formData.businessType);
-    formDataToSend.append('category', formData.category);
-    formDataToSend.append('email', formData.email);
-    formDataToSend.append('phoneNo', formData.phoneNo);
-    formDataToSend.append('address', formData.address);
-    formDataToSend.append('websiteOrSocialMedia', formData.websiteOrSocialMedia);
-    // Fixed field name to match what the backend expects
-    formDataToSend.append('brand_logo', formData.brandLogo);
-
     // Call backend API to register brand
     try {
       // Capture the response from axios
-      const response = await axios.post('https://micromatch-backend.onrender.com/api/brands/register', formDataToSend, {
+      const response = await axios.post('https://micromatch-backend.onrender.com/api/brands/register', formData, {
         headers: {
-          'x-auth-token': localStorage.getItem('token'), // Use the header name your backend expects
-          'Content-Type': 'multipart/form-data', // Set Content-Type to handle file upload
+          'x-auth-token': localStorage.getItem('token') // Use the header name your backend expects
         }
       });
       
@@ -133,7 +108,7 @@ export default function BrandSignIn() {
       <div className="relative z-10 w-full max-w-lg">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">
-            Brand Sign Up
+            Brand Sign In
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -169,22 +144,6 @@ export default function BrandSignIn() {
                 placeholder="Enter your legal entity name"
               />
               {errors.legalEntityName && <p className="mt-1 text-sm text-red-500">{errors.legalEntityName}</p>}
-            </div>
-
-            {/* Brand Logo */}
-            <div>
-              <label htmlFor="brandLogo" className="block text-sm font-medium text-gray-700 mb-1">
-                Upload Brand Logo
-              </label>
-              <input
-                type="file"
-                id="brandLogo"
-                name="brandLogo"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-              {errors.brandLogo && <p className="mt-1 text-sm text-red-500">{errors.brandLogo}</p>}
             </div>
 
             {/* Business Type */}
@@ -243,7 +202,7 @@ export default function BrandSignIn() {
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Enter your business email"
+                placeholder="example@business.com"
               />
               {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
             </div>
@@ -254,41 +213,42 @@ export default function BrandSignIn() {
                 Phone Number
               </label>
               <input
-                type="text"
+                type="tel"
                 id="phoneNo"
                 name="phoneNo"
                 value={formData.phoneNo}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Enter your phone number"
+                placeholder="10-digit phone number"
+                maxLength="10"
               />
               {errors.phoneNo && <p className="mt-1 text-sm text-red-500">{errors.phoneNo}</p>}
             </div>
 
-            {/* Business Address */}
+            {/* Registered Business Address */}
             <div>
               <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
                 Registered Business Address
               </label>
-              <input
-                type="text"
+              <textarea
                 id="address"
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
+                rows="3"
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Enter your business address"
+                placeholder="Enter your registered business address"
               />
               {errors.address && <p className="mt-1 text-sm text-red-500">{errors.address}</p>}
             </div>
 
-            {/* Website or Social Media */}
+            {/* Website or Social Media Links */}
             <div>
               <label htmlFor="websiteOrSocialMedia" className="block text-sm font-medium text-gray-700 mb-1">
-                Website or Social Media Link
+                Website or Social Media Links
               </label>
               <input
-                type="text"
+                type="url"
                 id="websiteOrSocialMedia"
                 name="websiteOrSocialMedia"
                 value={formData.websiteOrSocialMedia}
@@ -302,7 +262,7 @@ export default function BrandSignIn() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
             >
               Register Brand
             </button>

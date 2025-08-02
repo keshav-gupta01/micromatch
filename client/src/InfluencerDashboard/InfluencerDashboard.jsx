@@ -1,79 +1,179 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Settings from './components/Settings';
-import CampaignsBrowsePage from './components/CampaignsBrowsePage'; // Import the CampaignsBrowsePage component
+import CampaignsBrowsePage from './components/CampaignsBrowsePage';
 
-const InfluencerDashboard = () => {  const [activeTab, setActiveTab] = useState('overview');
+const InfluencerDashboard = () => {
+  const [activeTab, setActiveTab] = useState('overview');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Default to collapsed
-  const navigate = useNavigate(); // Initialize the navigate function
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [influencerData, setInfluencerData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [collaborations, setCollaborations] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [stats, setStats] = useState({
+    totalEarnings: '0',
+    activeCollaborations: '0',
+    engagementRate: '0%',
+    totalFollowers: '0'
+  });
+  const navigate = useNavigate();
   
-  // User information
-  const user = {
+  // Get influencer ID from localStorage
+  const influencerId = localStorage.getItem('influencerId');
+  
+  // Fetch influencer data on component mount
+  useEffect(() => {
+    const fetchInfluencerData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token || !influencerId || influencerId === 'null') {
+          console.warn('Token or influencer ID not found');
+          // Set fallback data for demo purposes
+          setInfluencerData({
+            name: "Jane Doe",
+            profilePicture: "https://res.cloudinary.com/dmlzftk1w/image/upload/v1753626484/campaign_media/nrz9jf315akgnhtxln5n.png",
+            gmail: "jane.doe@example.com",
+            instaId: "@janedoe",
+            verified: true,
+            category: "Lifestyle"
+          });
+          // Load dummy data even without token
+          await fetchCollaborations(null);
+          await fetchPayments(null);
+          await fetchStats(null);
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch(`https://micromatch-backend.onrender.com/api/influencers/${influencerId}`, {
+          headers: {
+            'x-auth-token': token,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setInfluencerData(data.influencer);
+            // Load dummy data for collaborations, payments, and stats
+            await fetchCollaborations(token);
+            await fetchPayments(token);
+            await fetchStats(token);
+          }
+        } else {
+          console.error('Failed to fetch influencer data');
+          // Set fallback data
+          setInfluencerData({
+            name: "Jane Doe",
+            profilePicture: "https://res.cloudinary.com/dmlzftk1w/image/upload/v1753626484/campaign_media/nrz9jf315akgnhtxln5n.png",
+            gmail: "jane.doe@example.com",
+            instaId: "@janedoe",
+            verified: true,
+            category: "Lifestyle"
+          });
+          // Still load dummy data even with fallback
+          await fetchCollaborations(token);
+          await fetchPayments(token);
+          await fetchStats(token);
+        }
+      } catch (error) {
+        console.error('Error fetching influencer data:', error);
+        // Set fallback data
+        setInfluencerData({
+          name: "Jane Doe",
+          profilePicture: "https://res.cloudinary.com/dmlzftk1w/image/upload/v1753626484/campaign_media/nrz9jf315akgnhtxln5n.png",
+          gmail: "jane.doe@example.com",
+          instaId: "@janedoe",
+          verified: true,
+          category: "Lifestyle"
+        });
+        // Still load dummy data even with error
+        await fetchCollaborations(null);
+        await fetchPayments(null);
+        await fetchStats(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInfluencerData();
+  }, [influencerId]);
+
+  // Set dummy collaborations data
+  const fetchCollaborations = async (token) => {
+    // Dummy collaborations data
+    const dummyCollaborations = [
+      { id: 1, brandName: "FitStyle", campaignType: "Sponsored Post", status: "Completed", payment: "500" },
+      { id: 2, brandName: "GlowCosmetics", campaignType: "Product Review", status: "Completed", payment: "300" },
+      { id: 3, brandName: "TechGadgets", campaignType: "Unboxing Video", status: "Completed", payment: "650" },
+      { id: 4, brandName: "EcoFriendly", campaignType: "Brand Ambassador", status: "Active", payment: "800" },
+      { id: 5, brandName: "TravelMore", campaignType: "Instagram Story", status: "Completed", payment: "250" },
+    ];
+    setCollaborations(dummyCollaborations);
+  };
+
+  // Set dummy payments data
+  const fetchPayments = async (token) => {
+    // Dummy payments data
+    const dummyPayments = [
+      { id: 1, date: "2023-10-01", amount: "500", brandName: "FitStyle", status: "Paid" },
+      { id: 2, date: "2023-09-15", amount: "300", brandName: "GlowCosmetics", status: "Pending" },
+      { id: 3, date: "2023-08-22", amount: "650", brandName: "TechGadgets", status: "Paid" },
+      { id: 4, date: "2023-07-30", amount: "800", brandName: "EcoFriendly", status: "Paid" },
+      { id: 5, date: "2023-07-10", amount: "250", brandName: "TravelMore", status: "Pending" },
+    ];
+    setPayments(dummyPayments);
+  };
+
+  // Set dummy stats data
+  const fetchStats = async (token) => {
+    // Dummy stats data
+    const dummyStats = {
+      totalEarnings: "2,500",
+      activeCollaborations: "4",
+      engagementRate: "8.5%",
+      totalFollowers: "125K"
+    };
+    setStats(dummyStats);
+  };
+  
+  // Default user data (fallback)
+  const defaultUser = {
     name: "Sarah Johnson",
     avatar: "/api/placeholder/80/80",
     role: "Content Creator"
   };
+
+  const user = influencerData ? {
+    name: influencerData.name || defaultUser.name,
+    avatar: influencerData.profilePicture || defaultUser.avatar,
+    role: defaultUser.role,
+    gmail: influencerData.gmail,
+    instaId: influencerData.instaId,
+    verified: influencerData.verified
+  } : defaultUser;
   
-  // Dummy data for demonstration (expanded with more examples)
-  const previousCollaborations = [
-    { id: 1, brand: "FitStyle", type: "Sponsored Post", status: "Completed", payment: "$500" },
-    { id: 2, brand: "GlowCosmetics", type: "Product Review", status: "Completed", payment: "$300" },
-    { id: 3, brand: "TechGadgets", type: "Unboxing Video", status: "Completed", payment: "$650" },
-    { id: 4, brand: "EcoFriendly", type: "Brand Ambassador", status: "Completed", payment: "$800" },
-    { id: 5, brand: "TravelMore", type: "Instagram Story", status: "Completed", payment: "$250" },
-  ];
+  // Handle logout
+  const handleLogout = () => {
+    // Clear authentication data
+    localStorage.removeItem('token');
+    localStorage.removeItem('influencerId');
+    localStorage.removeItem('userType');
+    sessionStorage.clear();
+    
+    // Navigate to login page
+    navigate('/login');
+  };
 
-  const availableCollaborations = [
-    {
-      id: 1,
-      brand: "Food Delight",
-      logo: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",      
-      description: "Showcase our range of gourmet desserts and pastries.",
-      payment: "$450",
-      deadline: "2024-01-15"
-    },
-    {
-      id: 2,
-      brand: "First Gear Cafe",
-      logo: "https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      description: "Create a video highlighting our popular coffee blends and breakfast options.",
-      payment: "$300",
-      deadline: "2023-12-20"
-    },
-    {
-      id: 3,
-      brand: "Fenny's Kitchen",
-      logo: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHJlc3RhdXJhbnR8ZW58MHx8MHx8fDA%3D",
-      description: "Share your dining experience featuring our family meal recipes.",
-      payment: "$380",
-      deadline: "2024-01-05"
-    },
-    {
-      id: 4,
-      brand: "Rasoi Restaurant",      
-      logo: "https://images.unsplash.com/photo-1552590635-27c2c2128abf?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      description: "Create a review video showcasing our authentic Indian dishes.",
-      payment: "$550",
-      deadline: "2023-12-28"
-    },
-  ];
-
-  const payments = [
-    { id: 1, date: "2023-10-01", amount: "$500", brand: "FitStyle", status: "Paid" },
-    { id: 2, date: "2023-09-15", amount: "$300", brand: "GlowCosmetics", status: "Pending" },
-    { id: 3, date: "2023-08-22", amount: "$650", brand: "TechGadgets", status: "Paid" },
-    { id: 4, date: "2023-07-30", amount: "$800", brand: "EcoFriendly", status: "Paid" },
-    { id: 5, date: "2023-07-10", amount: "$250", brand: "TravelMore", status: "Pending" },
-  ];
-
-  // Stats data
-  const stats = [
-    { label: "Total Earnings", value: "$2,500", icon: "revenue" },
-    { label: "Active Collaborations", value: "4", icon: "collaborations" },
-    { label: "Engagement Rate", value: "8.5%", icon: "engagement" },
-    { label: "Total Followers", value: "125K", icon: "followers" },
+  // Stats data array for rendering
+  const statsArray = [
+    { label: "Total Earnings", value: `$${stats.totalEarnings}`, icon: "revenue" },
+    { label: "Active Collaborations", value: stats.activeCollaborations, icon: "collaborations" },
+    { label: "Engagement Rate", value: stats.engagementRate, icon: "engagement" },
+    { label: "Total Followers", value: stats.totalFollowers, icon: "followers" },
   ];
 
   // Toggle user menu
@@ -86,7 +186,21 @@ const InfluencerDashboard = () => {  const [activeTab, setActiveTab] = useState(
     setSidebarCollapsed(!sidebarCollapsed);
   };
 
-  // Icon components for a more professional look
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuOpen && !event.target.closest('.user-menu-container')) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [userMenuOpen]);
+
+  // Icon components
   const icons = {
     revenue: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -124,11 +238,6 @@ const InfluencerDashboard = () => {  const [activeTab, setActiveTab] = useState(
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
     ),
-    menu: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    ),
     notification: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -143,18 +252,20 @@ const InfluencerDashboard = () => {  const [activeTab, setActiveTab] = useState(
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
       </svg>
-    ),
-    performance: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-      </svg>
     )
   };
-  
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#104581]"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen w-screen flex bg-[#96AED0] overflow-hidden">
-      {/* Left sidebar - now collapsed by default */}
+      {/* Left sidebar */}
       <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-gray-900 text-white flex flex-col transition-all duration-300`}>
         {/* Toggle button */}
         <div className="py-4 px-3 border-b border-gray-800 flex justify-center">
@@ -191,7 +302,6 @@ const InfluencerDashboard = () => {  const [activeTab, setActiveTab] = useState(
                   }`}
                   onClick={() => setActiveTab(item.id)}
                 >
-                  {/* Display only icon when collapsed, full name when expanded */}
                   <span className={`${sidebarCollapsed ? 'mx-auto' : ''}`}>
                     {icons[item.icon]}
                   </span>
@@ -215,82 +325,105 @@ const InfluencerDashboard = () => {  const [activeTab, setActiveTab] = useState(
       
       {/* Main content */}
       <div className="flex-grow overflow-y-auto">
-        {/* Header - with user profile moved to right side */}
-        <>
-  <header className="bg-white py-3 px-6 flex justify-between items-center relative z-10">
-    <h1 className="text-2xl font-semibold text-gray-800">
-      {activeTab === 'overview' ? 'Dashboard Overview' : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-    </h1>
-    <div className="flex items-center space-x-4">
-      {/* Notification button */}
-      <button className="relative p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200">
-        {icons.notification}
-        <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-      </button>
-      
-      {/* User profile moved to right side */}
-      <div className="relative">
-        <div 
-          className="flex items-center cursor-pointer"
-          onClick={toggleUserMenu}
-        >
-          <span className="mr-2 text-gray-500">{icons.profile}</span>
-          <div className="hidden md:block ml-3">
-            <h3 className="font-medium text-sm text-gray-800">{user.name}</h3>
-            <p className="text-xs text-gray-500">{user.role}</p>
+        {/* Header */}
+        <header className="bg-white py-3 px-6 flex justify-between items-center relative z-10">
+          <h1 className="text-2xl font-semibold text-gray-800">
+            {activeTab === 'overview' ? 'Dashboard Overview' : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+          </h1>
+          <div className="flex items-center space-x-4">
+            {/* Notification button */}
+            <button className="relative p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200">
+              {icons.notification}
+              <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+            </button>
+            
+            {/* User profile */}
+            <div className="relative user-menu-container">
+              <div 
+                className="flex items-center cursor-pointer"
+                onClick={toggleUserMenu}
+              >
+                <img 
+                  src={user.avatar} 
+                  alt="Profile" 
+                  className="w-8 h-8 rounded-full object-cover border-2 border-gray-300"
+                />
+                <div className="hidden md:block ml-3">
+                  <div className="flex items-center">
+                    <h3 className="font-medium text-sm text-gray-800">{user.name}</h3>
+                    {user.verified && (
+                      <span className="ml-1 text-green-500 text-xs">✓</span>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500">{user.role}</p>
+                </div>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className="h-5 w-5 ml-2 text-gray-400" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+              
+              {/* User dropdown menu */}
+              {userMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                  <ul className="py-1">
+                    <li>
+                      <Link 
+                        to="/influencer-dashboard/profile"
+                        className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <span className="mr-2 text-gray-500">{icons.profile}</span>
+                        <span className="text-sm">Profile</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => {
+                          setActiveTab('settings');
+                          setUserMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer text-left"
+                      >
+                        <span className="mr-2 text-gray-500">{icons.settings}</span>
+                        <span className="text-sm">Settings</span>
+                      </button>
+                    </li>
+                    <li className="border-t border-gray-100">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full px-4 py-2 hover:bg-gray-100 flex items-center text-red-600 cursor-pointer text-left"
+                      >
+                        <span className="mr-2">{icons.logout}</span>
+                        <span className="text-sm">Logout</span>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
+        </header>
+        
+        {/* Wavy bottom border */}
+        <div className="relative bg-[#96AED0] w-full overflow-hidden h-12">
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            className="h-5 w-5 ml-2 text-gray-400" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
+            viewBox="0 0 1440 120" 
+            preserveAspectRatio="none"
+            className="absolute bottom-0 w-full h-full"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <path 
+              fill="#ffffff" 
+              d="M0,64L40,53.3C80,43,160,21,240,32C320,43,400,85,480,96C560,107,640,85,720,74.7C800,64,880,64,960,69.3C1040,75,1120,85,1200,80C1280,75,1360,53,1400,42.7L1440,32L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"
+            />
           </svg>
         </div>
-        
-        {/* User dropdown menu */}
-        {userMenuOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
-            <ul className="py-1">
-              <Link to="/influencer-dashboard/profile">
-              <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
-                <span className="mr-2 text-gray-500">{icons.profile}</span>
-                <span className="text-sm">Profile</span>
-              </li>
-              </Link>
-              <Link to="/influencer-dashboard/settings">
-                <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
-                  <span className="mr-2 text-gray-500">{icons.settings}</span><span className="text-sm">Settings</span>
-                </li></Link>
-              <li className="px-4 py-2 hover:bg-gray-100 flex items-center text-red-600 cursor-pointer border-t border-gray-100">
-                <span className="mr-2">{icons.logout}</span>
-                <span className="text-sm">Logout</span>
-              </li>
-            </ul>
-          </div>
-        )}
-      </div>
-    </div>
-  </header>
-  
-  {/* Wavy bottom border */}
-  <div className="relative bg-[#96AED0] w-full overflow-hidden h-12">
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 1440 120" 
-    preserveAspectRatio="none"
-    className="absolute bottom-0 w-full h-full"
-  >
-    <path 
-      fill="#ffffff" 
-      d="M0,64L40,53.3C80,43,160,21,240,32C320,43,400,85,480,96C560,107,640,85,720,74.7C800,64,880,64,960,69.3C1040,75,1120,85,1200,80C1280,75,1360,53,1400,42.7L1440,32L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"
-    />
-  </svg>
-  <div className="absolute bottom-0 w-full"></div>
-</div>
-</>
         
         {/* Main content area */}
         <main className="p-6">
@@ -298,7 +431,7 @@ const InfluencerDashboard = () => {  const [activeTab, setActiveTab] = useState(
             <>
               {/* Stats Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {stats.map((stat, index) => (
+                {statsArray.map((stat, index) => (
                   <div 
                     key={index}
                     className="bg-white p-6 rounded-lg shadow-md border border-gray-200"
@@ -316,44 +449,96 @@ const InfluencerDashboard = () => {  const [activeTab, setActiveTab] = useState(
                 ))}
               </div>
               
-              {/* Previous Collaborations - Professional Table */}
+              {/* Profile Summary Card */}
+              {influencerData && (
+                <div className="mb-8 bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-semibold text-gray-800">Profile Summary</h2>
+                    <Link 
+                      to="/influencer-dashboard/profile"
+                      className="text-[#104581] text-sm hover:text-blue-800"
+                    >
+                      Edit Profile
+                    </Link>
+                  </div>
+                  <div className="flex items-center">
+                    <img 
+                      src={user.avatar} 
+                      alt="Profile" 
+                      className="w-16 h-16 rounded-full object-cover border-4 border-[#104581] mr-4"
+                    />
+                    <div>
+                      <div className="flex items-center">
+                        <h3 className="text-xl font-semibold text-gray-800">{user.name}</h3>
+                        {user.verified && (
+                          <span className="ml-2 bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+                            Verified
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-gray-600">{user.instaId}</p>
+                      <p className="text-gray-500 text-sm">{user.gmail}</p>
+                      {influencerData.category && (
+                        <p className="text-gray-500 text-sm">Category: {influencerData.category}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Previous Collaborations Table */}
               <div className="mb-8 bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                   <h2 className="text-lg font-semibold text-gray-800">Previous Collaborations</h2>
                   <button className="text-[#104581] text-sm hover:text-[#104581]">View All</button>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
-                        <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                        <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {previousCollaborations.map((collab) => (
-                        <tr key={collab.id} className="hover:bg-gray-50">
-                          <td className="py-4 px-6 text-sm text-gray-900">{collab.brand}</td>
-                          <td className="py-4 px-6 text-sm text-gray-900">{collab.type}</td>
-                          <td className="py-4 px-6 text-sm">
-                            <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                              {collab.status}
-                            </span>
-                          </td>
-                          <td className="py-4 px-6 text-sm font-medium text-gray-900">{collab.payment}</td>
+                  {collaborations.length > 0 ? (
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
+                          <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                          <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {collaborations.map((collab) => (
+                          <tr key={collab.id} className="hover:bg-gray-50">
+                            <td className="py-4 px-6 text-sm text-gray-900">{collab.brandName || collab.brand}</td>
+                            <td className="py-4 px-6 text-sm text-gray-900">{collab.campaignType || collab.type}</td>
+                            <td className="py-4 px-6 text-sm">
+                              <span className={`px-2 py-1 text-xs rounded-full ${
+                                collab.status === 'Completed' || collab.status === 'completed'
+                                  ? 'bg-green-100 text-green-800'
+                                  : collab.status === 'Active' || collab.status === 'active'
+                                  ? 'bg-blue-100 text-blue-800'
+                                  : 'bg-gray-100 text-gray-800'
+                              }`}>
+                                {collab.status}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6 text-sm font-medium text-gray-900">
+                              ${collab.payment || collab.amount || '0'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="p-8 text-center">
+                      <p className="text-gray-500 text-sm">No collaborations found</p>
+                      <p className="text-gray-400 text-xs mt-1">Start applying to campaigns to see your collaborations here</p>
+                    </div>
+                  )}
                 </div>
               </div>
-              
             </>
           )}
 
-          {activeTab === 'campaigns' && <CampaignsBrowsePage />}          
+          {activeTab === 'campaigns' && <CampaignsBrowsePage />}
+          {activeTab === 'settings' && <Settings />}
           
           {activeTab === 'payments' && (
             <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
@@ -361,46 +546,79 @@ const InfluencerDashboard = () => {  const [activeTab, setActiveTab] = useState(
                 <h2 className="text-lg font-semibold text-gray-800">Payment History</h2>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gray-50">
-                      <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                      <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
-                      <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                      <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {payments.map((payment) => (
-                      <tr key={payment.id} className="hover:bg-gray-50">
-                        <td className="py-4 px-6 text-sm text-gray-900">{payment.date}</td>
-                        <td className="py-4 px-6 text-sm text-gray-900">{payment.brand}</td>
-                        <td className="py-4 px-6 text-sm font-medium text-gray-900">{payment.amount}</td>
-                        <td className="py-4 px-6 text-sm">
-                          <span className={`px-2 py-1 text-xs rounded-full ${
-                            payment.status === 'Paid' 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {payment.status}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-sm text-[#104581] hover:text-blue-800 cursor-pointer">
-                          View Receipt
-                        </td>
+                {payments.length > 0 ? (
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-gray-50">
+                        <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
+                        <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                        <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {payments.map((payment) => (
+                        <tr key={payment.id} className="hover:bg-gray-50">
+                          <td className="py-4 px-6 text-sm text-gray-900">
+                            {new Date(payment.date || payment.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="py-4 px-6 text-sm text-gray-900">{payment.brandName || payment.brand}</td>
+                          <td className="py-4 px-6 text-sm font-medium text-gray-900">
+                            ${payment.amount}
+                          </td>
+                          <td className="py-4 px-6 text-sm">
+                            <span className={`px-2 py-1 text-xs rounded-full ${
+                              payment.status === 'Paid' || payment.status === 'paid'
+                                ? 'bg-green-100 text-green-800' 
+                                : payment.status === 'Pending' || payment.status === 'pending'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {payment.status}
+                            </span>
+                          </td>
+                          <td className="py-4 px-6 text-sm text-[#104581] hover:text-blue-800 cursor-pointer">
+                            View Receipt
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="p-8 text-center">
+                    <p className="text-gray-500 text-sm">No payment history found</p>
+                    <p className="text-gray-400 text-xs mt-1">Complete collaborations to see your payment history here</p>
+                  </div>
+                )}
               </div>
             </div>
           )}
           
-          {/* Placeholder for other tabs */}
-          {(activeTab !== 'overview' && activeTab !== 'payments') && (
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 flex justify-center items-center h-64">
-              <p className="text-gray-500">{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} content coming soon</p>
+          {/* Analytics tab */}
+          {activeTab === 'analytics' && (
+            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+              <div className="text-center">
+                <div className="mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-800 mb-2">Analytics Coming Soon</h3>
+                <p className="text-gray-500 text-sm mb-4">
+                  We're working on bringing you detailed analytics about your performance, 
+                  engagement rates, and collaboration insights.
+                </p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
+                  <h4 className="font-medium text-blue-800 mb-2">What's coming:</h4>
+                  <ul className="text-blue-700 text-sm space-y-1">
+                    <li>• Performance metrics and engagement analytics</li>
+                    <li>• Campaign ROI and conversion tracking</li>
+                    <li>• Audience demographics and insights</li>
+                    <li>• Earnings and growth trends</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           )}
         </main>

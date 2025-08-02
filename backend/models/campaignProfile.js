@@ -19,11 +19,11 @@ const mediaInfoSchema = new mongoose.Schema({
 const campaignAnalyticsSchema = new mongoose.Schema({
   influencer_id: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Influencer' 
+    ref: 'InfluencerProfile' 
   },
-  views : Number,
-  reach: Number,
-  shares: Number,
+  views: { type: Number, default: 0 },
+  reach: { type: Number, default: 0 },
+  shares: { type: Number, default: 0 },
   description: String,
   timestamp: { type: Date, default: Date.now }
 }, { _id: false });
@@ -31,7 +31,7 @@ const campaignAnalyticsSchema = new mongoose.Schema({
 const campaignSchema = new mongoose.Schema({
   brand: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'BrandProfile', 
+    ref: 'Brand', // FIXED: Changed from 'BrandProfile' to 'Brand'
     required: true 
   },
   campaignName: { 
@@ -64,28 +64,31 @@ const campaignSchema = new mongoose.Schema({
   media: [String], // Cloudinary URLs
   mediaInfo: [mediaInfoSchema],
   products: [productSchema],
-  camp_type: Number,
+  camp_type: { 
+    type: Number, 
+    default: 0 // 0: global, 1: local, 2: regional 
+  },
   hashtags: String,
   status: { 
     type: String, 
-    enum: ['active', 'completed'], 
+    enum: ['active', 'completed', 'paused'], 
     default: 'active'
   },
+  // FIXED: Removed typo "matchedInflxuencers"
   matchedInfluencers: [{ 
-      
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'InfluencerProfile' 
-    }],
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'InfluencerProfile' 
+  }],
   acceptedInfluencers: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'InfluencerProfile' 
-}],
+  }],
   completedInfluencers: [{
-  type: mongoose.Schema.Types.ObjectId, 
-  ref: 'InfluencerProfile' 
-}],
-campaignAnalytics:[campaignAnalyticsSchema],
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'InfluencerProfile' 
+  }],
+  // FIXED: Added proper spacing
+  campaignAnalytics: [campaignAnalyticsSchema],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Campaign', campaignSchema);
-
