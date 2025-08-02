@@ -395,7 +395,7 @@ export default function InfluencerSignIn() {
       return;
     }
 
-    if (!allowPermission || !accessToken || !instagramId) {
+    if (!allowPermission || !access_token || !insta_scoped_id) {
       console.log(access_token)
       console.log(insta_scoped_id)
       toast.warning("Please connect Instagram to continue.");
