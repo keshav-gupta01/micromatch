@@ -349,6 +349,8 @@ export default function InfluencerSignIn() {
           setAllowPermission(true);
           setAccessToken(res.data.accessToken);
           setInstagramId(res.data.instagramId);
+          console.log(accessToken)
+          console.log(instagramId)
           toast.success("Instagram verified successfully");
           
         } else {
