@@ -396,13 +396,13 @@ export default function InfluencerSignIn() {
     }
 
     if (!allowPermission || !access_token || !insta_scoped_id) {
-      console.log(access_token)
-      console.log(insta_scoped_id)
       toast.warning("Please connect Instagram to continue.");
       return;
     }
 
     try {
+      console.log({access_token, insta_scoped_id, ...formData});
+      
       const res = await axios.post('https://micromatch-backend.onrender.com/api/influencers/register', {
         ...formData,
         access_token,
