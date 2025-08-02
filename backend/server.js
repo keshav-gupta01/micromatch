@@ -27,7 +27,7 @@ app.use(express.json({ limit: '50mb' })); // Increased for media uploads
 app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Add this line
 
 app.use(cors({
-  origin: 'http://localhost:5173'  // Replace with your actual frontend URL
+  origin: 'https://micromatch.onrender.com'  // Replace with your actual frontend URL
 }));
 
 // Routes
