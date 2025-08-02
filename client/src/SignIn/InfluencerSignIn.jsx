@@ -317,8 +317,8 @@ export default function InfluencerSignIn() {
 
   const [errors, setErrors] = useState({});
   const [allowPermission, setAllowPermission] = useState(false);
-  const [accessToken, setAccessToken] = useState(null);
-  const [instagramId, setInstagramId] = useState(null);
+  const [access_token, setAccessToken] = useState(null);
+  const [insta_scoped_id, setInstagramId] = useState(null);
 
   const categories = [
     "Fashion & Style", "Beauty & Makeup", "Travel & Adventure", "Fitness & Health",
@@ -349,8 +349,6 @@ export default function InfluencerSignIn() {
           setAllowPermission(true);
           setAccessToken(res.data.access_token);
           setInstagramId(res.data.insta_scoped_id);
-          console.log(accessToken)
-          console.log(instagramId)
           toast.success("Instagram verified successfully");
           
         } else {
@@ -398,6 +396,8 @@ export default function InfluencerSignIn() {
     }
 
     if (!allowPermission || !accessToken || !instagramId) {
+      console.log(access_token)
+      console.log(insta_scoped_id)
       toast.warning("Please connect Instagram to continue.");
       return;
     }
@@ -405,8 +405,8 @@ export default function InfluencerSignIn() {
     try {
       const res = await axios.post('https://micromatch-backend.onrender.com/api/influencers/register', {
         ...formData,
-        accessToken,
-        instagramId
+        access_token,
+        insta_scoped_id
       }, {
         headers: {
           'x-auth-token': localStorage.getItem('token')
