@@ -133,7 +133,7 @@ export default function BrandSignIn() {
       <div className="relative z-10 w-full max-w-lg">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">
-            Brand Sign In
+            Brand Sign Up
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">

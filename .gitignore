@@ -22,3 +22,4 @@ flaskServer/.env.*
 
 # Flask server
 flaskServer
+node_modules/

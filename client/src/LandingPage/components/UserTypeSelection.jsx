@@ -29,7 +29,7 @@ const UserTypeSelection = ({ onClose }) => {
                             className="w-full py-4 bg-[#104581] text-white rounded-lg hover:bg-[#0d3a6d] transition-all flex items-center justify-center"
                             onClick={onClose}
                         >
-                            <span className="text-lg">Sign in as Influencer</span>
+                            <span className="text-lg">Sign Up as Influencer</span>
                         </button>
                     </Link>
                     
@@ -38,7 +38,7 @@ const UserTypeSelection = ({ onClose }) => {
                             className="w-full py-4 border-2 border-[#104581] text-[#104581] bg-white rounded-lg hover:bg-gray-50 transition-all flex items-center justify-center"
                             onClick={onClose}
                         >
-                            <span className="text-lg">Sign in as Brand</span>
+                            <span className="text-lg">Sign Up as Brand</span>
                         </button>
                     </Link>
                 </div>
