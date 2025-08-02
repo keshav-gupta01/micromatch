@@ -89,7 +89,6 @@ export default function BrandSignIn() {
     }
 
     setErrors({});
-    console.log("Form submitted:", formData);
 
     // Create FormData to handle file upload
     const formDataToSend = new FormData();
