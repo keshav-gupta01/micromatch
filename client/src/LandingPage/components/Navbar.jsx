@@ -35,7 +35,7 @@ const Navbar = () => {
         <>
             <div className='w-full h-[96px] bg-white shadow-sm'>
                 <div className='p-4 md:max-w-[1080px] max-w-[400px] m-auto w-full h-full flex justify-between items-center'>
-                    <img src={Logo} alt="logo" className='h-[25px] cursor-pointer' />
+                    <img src={Logo} alt="logo" className='h-auto max-h-[80px] cursor-pointer' />
                     <div className="flex items-center">
                         <ul className='hidden md:flex gap-4'>
                             <li className='cursor-pointer'>Home</li>
