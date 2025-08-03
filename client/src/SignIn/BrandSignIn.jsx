@@ -107,7 +107,7 @@ export default function BrandSignIn() {
     // Call backend API to register brand
     try {
       // Capture the response from axios
-      const response = await axios.post('http://localhost:5000/api/brands/register', formDataToSend, {
+      const response = await axios.post('https://micromatch-backend.onrender.com/api/brands/register', formDataToSend, {
         headers: {
           'x-auth-token': localStorage.getItem('token'), // Use the header name your backend expects
           'Content-Type': 'multipart/form-data', // Set Content-Type to handle file upload
@@ -133,7 +133,7 @@ export default function BrandSignIn() {
       <div className="relative z-10 w-full max-w-lg">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">
-            Brand Sign In
+            Brand Sign Up
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">

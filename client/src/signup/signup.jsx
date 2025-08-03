@@ -176,37 +176,3 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
-
-
-//Dummy Signup code ---- comment code above and uncomment below for testing
-// signup.jsx
-// import React from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { Link } from 'react-router-dom';
-
-// const SignupPage = () => {
-//   const navigate = useNavigate();
-
-//   const handleDummySignup = () => {
-//     // Simulate successful signup and redirect
-//     navigate('../general-dashboard');
-//   };
-
-//   return (
-//     <div style={{ textAlign: 'center', marginTop: '100px' }}>
-//       <h1>Dummy Signup Page</h1>
-//       <p>Click the button below to simulate signup and go to General Dashboard</p>
-//       <button 
-//         onClick={handleDummySignup} 
-//         style={{ padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}
-//       >
-//         Sign Up
-//       </button>
-//       <div className="login-link">
-//                 Go to general dashboard? <Link to="/general-dashboard">Log In</Link>
-//              </div>
-//     </div>
-//   );
-// };
-
-// export default SignupPage;

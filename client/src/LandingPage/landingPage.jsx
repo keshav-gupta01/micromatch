@@ -6,19 +6,14 @@ function LandingPage() {
 
   return (
     <div className="app">
-      
-
-
         <Navbar/>
         <HeroSection/>
         <Companies/>
-        <InfluencerSlider/>
         <div id="about-section">
         <About/>
         </div>
-        
+        <InfluencerSlider/>
         <Categories/>
-        {/* <FeedBack/> */}
         <CTA/>
         
         <div id="support-section">

@@ -1,6 +1,7 @@
 import React from 'react'
-import { HeroSection, Navbar,Companies, About,CTA,Footer } from './components/index.js'
-import InfluencerSlider from "./components/InfluencerSlider.jsx";
+import Navbar from './components/Navbar'
+import { HeroSection,Companies,Courses, About,Categories,FeedBack,CTA,Footer } from '../LandingPage/components'
+import InfluencerSlider from "../LandingPage/components/InfluencerSlider.jsx";
 
 function LandingPage() {
 
@@ -13,6 +14,7 @@ function LandingPage() {
         <About/>
         </div>
         <InfluencerSlider/>
+        <Categories/>
         <CTA/>
         <div id="support-section">
         <Footer/>

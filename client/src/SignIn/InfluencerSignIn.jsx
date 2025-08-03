@@ -1,7 +1,8 @@
+// ✅ InfluencerSignIn.jsx - handleSubmit updated with verification check
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'react-toastify'; // Added toast for consistent notifications
+import { toast } from 'react-toastify';
 
 export default function InfluencerSignIn() {
   const navigate = useNavigate();
@@ -17,8 +18,8 @@ export default function InfluencerSignIn() {
 
   const [errors, setErrors] = useState({});
   const [allowPermission, setAllowPermission] = useState(false);
-  const [accessToken, setAccessToken] = useState(null);
-  const [instagramId, setInstagramId] = useState(null);
+  const [access_token, setAccessToken] = useState(null);
+  const [insta_scoped_id, setInstagramId] = useState(null);
 
   const categories = [
     "Fashion & Style", "Beauty & Makeup", "Travel & Adventure", "Fitness & Health",
@@ -27,32 +28,39 @@ export default function InfluencerSignIn() {
   ];
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const code = queryParams.get('code');
-  
-    if (code) {
-      axios
-        .get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
-          headers: {
-            'x-auth-token': localStorage.getItem('token')
-          }
-        })
-        .then(res => {
-          if (res.data.success) {
-            setAllowPermission(true);
-            setAccessToken(res.data.accessToken);
-            setInstagramId(res.data.instagramId);
-            toast.success("Instagram verified successfully");
-          } else {
-            toast.error("Instagram verification failed");
-          }
-        })
-        .catch(err => {
-          console.error("Error verifying Instagram:", err);
-          toast.error("Error connecting Instagram. Please try again.");
-        });
-    }
-  }, []);
+  // Restore form data after redirect
+  const savedData = localStorage.getItem('influencerFormData');
+  if (savedData) {
+    setFormData(JSON.parse(savedData));
+  }
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const code = queryParams.get('code');
+
+  if (code) {
+    axios
+      .get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
+        headers: {
+          'x-auth-token': localStorage.getItem('token')
+        }
+      })
+      .then(res => {
+        if (res.data.success) {
+          setAllowPermission(true);
+          setAccessToken(res.data.access_token);
+          setInstagramId(res.data.insta_scoped_id);
+          toast.success("Instagram verified successfully");
+          
+        } else {
+          toast.error("Instagram verification failed");
+        }
+      })
+      .catch(err => {
+        console.error("Error verifying Instagram:", err);
+        toast.error("Error connecting Instagram. Please try again.");
+      });
+  }
+}, []);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,6 +83,7 @@ export default function InfluencerSignIn() {
   };
 
   const handleConnectInstagram = () => {
+    localStorage.setItem('influencerFormData', JSON.stringify(formData)); // ✅ Save form data
     window.location.href = "https://micromatch-flask-server.onrender.com/server/login";
   };
 
@@ -86,37 +95,37 @@ export default function InfluencerSignIn() {
       return;
     }
 
-    if (!allowPermission || !accessToken || !instagramId) {
+    if (!allowPermission || !access_token || !insta_scoped_id) {
       toast.warning("Please connect Instagram to continue.");
       return;
     }
 
     try {
-      const res = await axios.post('https://micromatch-backend.onrender.com/api/influencers/register', {
+        const res = await axios.post('https://micromatch-backend.onrender.com/api/influencers/register', {
         ...formData,
-        accessToken,
-        instagramId
+        access_token,
+        insta_scoped_id
       }, {
         headers: {
           'x-auth-token': localStorage.getItem('token')
         }
       });
 
-      toast.success("Sign-in successful!");
-      setFormData({
-        name: '',
-        gmail: '',
-        contactNo: '',
-        instaId: '',
-        youtubeChannel: '',
-        pincode: '',
-        category: ''
-      });
-      setErrors({});
-      navigate('/influencer-dashboard');
+      if (res.data.success) {
+        if (res.data.isVerified) {
+          toast.success("Registration & verification successful!");
+          navigate('/influencer-dashboard');
+        } else {
+          toast.info("Registered, but verification failed. Login will be allowed once verified.");
+          navigate('/login');
+        }
+      } else {
+        toast.error(res.data.message || "Registration failed.");
+      }
+
     } catch (err) {
       console.error(err);
-      toast.error("Sign-in failed. Please try again.");
+      toast.error("Sign-Up failed. Please try again.");
     }
   };
 
@@ -130,7 +139,7 @@ export default function InfluencerSignIn() {
       <div className="relative z-10 w-full max-w-lg">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">
-            Influencer Sign In
+            Influencer Sign Up
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -265,6 +274,7 @@ export default function InfluencerSignIn() {
               {!allowPermission ? (
                 <button
                   type="button"
+                  style={{ cursor: 'pointer' }}
                   onClick={handleConnectInstagram}
                   className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-200"
                 >
@@ -283,14 +293,14 @@ export default function InfluencerSignIn() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={!allowPermission}
+              disabled={false}
               className={`w-full py-3 rounded-lg transition duration-200 ${
                 allowPermission
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              Sign In as Influencer
+              Sign Up as Influencer
             </button>
           </form>
         </div>

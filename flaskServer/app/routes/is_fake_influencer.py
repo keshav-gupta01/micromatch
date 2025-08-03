@@ -4,7 +4,7 @@ from app.services.is_fake_influencer_service import check_fake_influencer
 
 is_fake_influencer_bp = Blueprint("is_fake_influencer_bp", __name__, url_prefix="/server")
 
-@is_fake_influencer_bp.route("/is_fake_influencer", methods=["GET"])
+@is_fake_influencer_bp.route("/is_fake_influencer", methods=["GET", "POST"])
 def is_fake_influencer():
     response = request.get_json()
     if not response:

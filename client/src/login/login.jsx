@@ -61,6 +61,51 @@ const LoginPage = () => {
       if (response.ok && data.token) {
         const decoded = jwtDecode(data.token);
         const role = decoded.role || null;
+        const userId = decoded.id;
+
+        // Save token and userId in localStorage
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', userId);
+
+        // If user is an influencer, fetch and store influencer ID
+        if (role === 'influencer') {
+          try {
+            const influencerResponse = await fetch(`https://micromatch-backend.onrender.com/api/influencers/by-user/${userId}`, {
+              headers: {
+                'x-auth-token': data.token,
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            if (influencerResponse.ok) {
+              const influencerData = await influencerResponse.json();
+              if (influencerData.success && influencerData.influencer) {
+                localStorage.setItem('influencerId', influencerData.influencer._id);
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching influencer profile:', error);
+          }
+        }
+        else if (role === 'brand') {
+          try {
+            const brandResponse = await fetch(`https://micromatch-backend.onrender.com/api/brands/by-user/${userId}`, {
+              headers: {
+                'x-auth-token': data.token,
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            if (brandResponse.ok) {
+              const brandData = await brandResponse.json();
+              if (brandData.success && brandData.brand) {
+                localStorage.setItem('brandId', brandData.brand._id);
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching brand profile:', error);
+          }
+        }
 
         // Set role-based redirect URL
         let url = '/general-dashboard';
@@ -68,9 +113,6 @@ const LoginPage = () => {
         else if (role === 'brand') url = '/business-dashboard';
         else if (role === 'influencer') url = '/influencer-dashboard';
 
-        // Save token in localStorage (optional)
-        localStorage.setItem('token', data.token);
-        
         setRedirectUrl(url);
         setIsSubmitted(true);
       } else {
