@@ -37,7 +37,7 @@ const Navbar = () => {
                 <div className='p-4 md:max-w-[1080px] max-w-[400px] m-auto w-full h-full flex justify-between items-center'>
                     <img src={Logo} alt="logo" className='h-[25px] cursor-pointer' />
                     <div className="flex items-center">
-                        <ul className='hidden md:flex gap-4 text-lg'>
+                        <ul className='hidden md:flex gap-4'>
                             <li className='cursor-pointer'>Home</li>
                             <li className='cursor-pointer' onClick={() => scrollToSection('about-section')}>About</li>
                             <li className='cursor-pointer' onClick={() => scrollToSection('support-section')}>Support</li>
@@ -45,17 +45,16 @@ const Navbar = () => {
                     </div>
                     <div className='md:flex hidden gap-4'>
                         <Link to="/login">
-                            <button className='flex justify-center items-center bg-transparent px-6 py-3 gap-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all'>
+                            <button className='flex justify-center items-center bg-transparent px-5 py-3 gap-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all'>
                                 <img src={lock} alt='lock' />
                                 <span className='text-gray-800'>Login</span>
                             </button>
                         </Link>
-                        <button 
-                            onClick={openUserTypeModal}
-                            className='px-8 py-3 bg-[#104581] text-white rounded-lg hover:bg-[#0d3a6d] transition-all'
-                        >
-                            Get Started
-                        </button>
+                        <Link to="/signup">
+                            <button className='px-6 py-3 bg-[#104581] text-white rounded-lg hover:bg-[#0d3a6d] transition-all'>
+                                <span className='text-white-800'>Sign Up</span>
+                            </button>
+                        </Link>
                     </div>
                     <motion.div whileTap={{ scale: 0.6 }} className="md:hidden cursor-pointer" onClick={handleToggle}>
                         <img src={toggle ? Close : Hamburger} alt="hamburger" />
@@ -82,7 +81,7 @@ const Navbar = () => {
                                     openUserTypeModal();
                                     setToggle(false);
                                 }}
-                                className='w-full text-white px-8 py-5 bg-[#104581] rounded-lg hover:bg-[#0d3a6d] transition-all'
+                                className='w-full text-white px-5 py-3 bg-[#104581] rounded-lg hover:bg-[#0d3a6d] transition-all'
                             >
                                 Get Started
                             </button>
