@@ -218,7 +218,7 @@ exports.verifyInfluencer = async (influencerId) => {
     // Call external API to verify if influencer is fake
     const apiUrl = process.env.VERIFICATION_API_URL || 'https://micromatch-flask-server.onrender.com/server/is_fake_influencer';
     const response = await axios.post(apiUrl, {
-      accessToken: influencer.access_token
+      access_token: influencer.access_token
     }, {
       timeout: 30000
     });
