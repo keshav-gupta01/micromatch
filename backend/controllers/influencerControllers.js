@@ -13,7 +13,7 @@ const INSTAGRAM_TOKEN_URL = "https://micromatch-flask-server.onrender.com/server
  *  Instagram Verification
  ----------------------------*/
 exports.verifyInstagram = async (req, res) => {
-  const code = queryParams.get('code');
+  const code = req.query.code; // ✅ Safe and standard
 
   if (!code) {
     return res.status(400).json({ success: false, message: 'Instagram code is missing' });
