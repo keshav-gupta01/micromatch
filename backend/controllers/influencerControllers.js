@@ -35,61 +35,179 @@ exports.verifyInstagram = async (req, res) => {
 };
 
 /** ---------------------------
- *  Register a new influencer
+ *  Register a new influencer - FIXED VERSION
  ----------------------------*/
 exports.registerInfluencer = async (req, res) => {
-  const {
-    name, gmail, contactNo, instaId,
-    youtubeChannel, pincode, category,
-    access_token, insta_scoped_id
-  } = req.body;
-
-  if (!access_token || !insta_scoped_id) {
-    return res.status(400).json({ success: false, message: 'Instagram authentication required' });
-  }
-
   try {
-    const existingInfluencer = await Influencer.findOne({ instaId });
-    if (existingInfluencer) {
-      return res.status(400).json({ success: false, message: 'Influencer with this Instagram ID already exists' });
+    console.log('Registration request received:', {
+      body: req.body,
+      user: req.user,
+      hasToken: !!req.header('x-auth-token')
+    });
+
+    const {
+      name, gmail, contactNo, instaId,
+      youtubeChannel, pincode, category,
+      access_token, insta_scoped_id
+    } = req.body;
+
+    // Validate required fields
+    const requiredFields = {
+      name, gmail, contactNo, instaId,
+      youtubeChannel, pincode, category
+    };
+
+    const missingFields = Object.entries(requiredFields)
+      .filter(([key, value]) => !value || (typeof value === 'string' && !value.trim()))
+      .map(([key]) => key);
+
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: `Missing required fields: ${missingFields.join(', ')}`
+      });
     }
 
+    // Validate Instagram authentication
+    if (!access_token || !insta_scoped_id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Instagram authentication required. Please connect your Instagram account.'
+      });
+    }
+
+    // Check if user exists and is authenticated
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'User authentication required. Please login first.'
+      });
+    }
+
+    // Check if influencer already exists with this Instagram ID
+    const existingInfluencer = await Influencer.findOne({ instaId: instaId.trim() });
+    if (existingInfluencer) {
+      return res.status(400).json({
+        success: false,
+        message: 'An influencer with this Instagram ID already exists'
+      });
+    }
+
+    // Check if user already has an influencer profile
+    const existingUserInfluencer = await Influencer.findOne({ user: req.user.id });
+    if (existingUserInfluencer) {
+      return res.status(400).json({
+        success: false,
+        message: 'User already has an influencer profile'
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(gmail)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email format'
+      });
+    }
+
+    // Validate contact number (10 digits)
+    const contactRegex = /^\d{10}$/;
+    if (!contactRegex.test(contactNo)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Contact number must be exactly 10 digits'
+      });
+    }
+
+    // Validate pincode (6 digits)
+    const pincodeRegex = /^\d{6}$/;
+    if (!pincodeRegex.test(pincode)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Pincode must be exactly 6 digits'
+      });
+    }
+
+    // Create new influencer
     const newInfluencer = new Influencer({
       user: req.user.id,
-      name,
-      gmail,
-      contactNo,
-      instaId,
-      youtubeChannel,
-      pincode,
-      category,
+      name: name.trim(),
+      gmail: gmail.trim().toLowerCase(),
+      contactNo: contactNo.trim(),
+      instaId: instaId.trim(),
+      youtubeChannel: youtubeChannel.trim(),
+      pincode: pincode.trim(),
+      category: category.trim(),
       access_token,
       insta_scoped_id
     });
 
-    await newInfluencer.save();
-    await User.findByIdAndUpdate(newInfluencer.user, { role: 'influencer' });
+    console.log('Creating new influencer:', newInfluencer);
 
-    const isVerified = await verifyInfluencer(newInfluencer._id);
-    const updatedInfluencer = await Influencer.findById(newInfluencer._id); // fetch updated fields
+    await newInfluencer.save();
+    
+    // Update user role
+    await User.findByIdAndUpdate(req.user.id, { role: 'influencer' });
+
+    console.log('Influencer saved successfully, starting verification...');
+
+    // Verify influencer
+    let isVerified = false;
+    try {
+      isVerified = await verifyInfluencer(newInfluencer._id);
+    } catch (verificationError) {
+      console.error('Verification failed:', verificationError);
+      // Don't fail the registration if verification fails
+    }
+
+    // Fetch updated influencer data
+    const updatedInfluencer = await Influencer.findById(newInfluencer._id);
+
+    console.log('Registration completed:', {
+      influencerId: updatedInfluencer._id,
+      verified: updatedInfluencer.verified,
+      isVerified
+    });
 
     res.status(201).json({
       success: true,
-      message: isVerified? 'Influencer registered and verified successfully': 'Influencer registered, but verification failed',
+      message: isVerified 
+        ? 'Influencer registered and verified successfully' 
+        : 'Influencer registered successfully, verification pending',
       influencer: updatedInfluencer,
-      isVerified: updatedInfluencer.verified
+      isVerified: updatedInfluencer.verified || false
     });
 
   } catch (error) {
     console.error('Error registering influencer:', error);
+    
+    // Handle specific MongoDB errors
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+      return res.status(400).json({
+        success: false,
+        message: `An influencer with this ${field} already exists`
+      });
+    }
+
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: validationErrors
+      });
+    }
+
     res.status(500).json({
       success: false,
-      message: 'Error registering influencer',
-      error: error.message
+      message: 'Internal server error during registration',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Registration failed'
     });
   }
 };
-
 /** ---------------------------
  *  Get influencer profile by user ID
  ----------------------------*/
