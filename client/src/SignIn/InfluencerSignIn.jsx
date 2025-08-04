@@ -1,4 +1,4 @@
-// ✅ InfluencerSignIn.jsx - handleSubmit updated with verification check
+// ✅ InfluencerSignIn.jsx - Fixed version with proper error handling
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -20,6 +20,7 @@ export default function InfluencerSignIn() {
   const [allowPermission, setAllowPermission] = useState(false);
   const [access_token, setAccessToken] = useState(null);
   const [insta_scoped_id, setInstagramId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const categories = [
     "Fashion & Style", "Beauty & Makeup", "Travel & Adventure", "Fitness & Health",
@@ -28,90 +29,170 @@ export default function InfluencerSignIn() {
   ];
 
   useEffect(() => {
-  // Restore form data after redirect
-  const savedData = localStorage.getItem('influencerFormData');
-  if (savedData) {
-    setFormData(JSON.parse(savedData));
-  }
+    // Check if user is authenticated
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('Please login first');
+      navigate('/login');
+      return;
+    }
 
-  const queryParams = new URLSearchParams(window.location.search);
-  const code = queryParams.get('code');
+    // Restore form data after redirect
+    const savedData = localStorage.getItem('influencerFormData');
+    if (savedData) {
+      try {
+        setFormData(JSON.parse(savedData));
+      } catch (e) {
+        console.error('Error parsing saved form data:', e);
+      }
+    }
 
-  if (code) {
-    axios
-      .get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
-        headers: {
-          'x-auth-token': localStorage.getItem('token')
-        }
-      })
-      .then(res => {
-        if (res.data.success) {
-          setAllowPermission(true);
-          setAccessToken(res.data.access_token);
-          setInstagramId(res.data.insta_scoped_id);
-          toast.success("Instagram verified successfully");
-          
-        } else {
-          toast.error("Instagram verification failed");
-        }
-      })
-      .catch(err => {
-        console.error("Error verifying Instagram:", err);
-        toast.error("Error connecting Instagram. Please try again.");
-      });
-  }
-}, []);
+    const queryParams = new URLSearchParams(window.location.search);
+    const code = queryParams.get('code');
+
+    if (code) {
+      setIsLoading(true);
+      axios
+        .get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
+          headers: {
+            'x-auth-token': token
+          }
+        })
+        .then(res => {
+          if (res.data.success) {
+            setAllowPermission(true);
+            setAccessToken(res.data.access_token);
+            setInstagramId(res.data.insta_scoped_id);
+            toast.success("Instagram verified successfully");
+            
+            // Clear the URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } else {
+            toast.error("Instagram verification failed");
+          }
+        })
+        .catch(err => {
+          console.error("Error verifying Instagram:", err);
+          toast.error("Error connecting Instagram. Please try again.");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [navigate]);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    
+    // Clear specific field error when user starts typing
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' });
+    }
   };
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.name) newErrors.name = "Name is required";
-    if (!formData.gmail) newErrors.gmail = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.gmail)) newErrors.gmail = "Email is invalid";
-    if (!formData.contactNo) newErrors.contactNo = "Contact number is required";
-    else if (!/^\d{10}$/.test(formData.contactNo)) newErrors.contactNo = "Contact must be 10 digits";
-    if (!formData.instaId) newErrors.instaId = "Instagram ID is required";
-    if (!formData.youtubeChannel) newErrors.youtubeChannel = "YouTube channel is required";
-    if (!formData.pincode) newErrors.pincode = "Pincode is required";
-    else if (!/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Pincode must be 6 digits";
+    
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    
+    if (!formData.gmail.trim()) {
+      newErrors.gmail = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.gmail)) {
+      newErrors.gmail = "Email is invalid";
+    }
+    
+    if (!formData.contactNo.trim()) {
+      newErrors.contactNo = "Contact number is required";
+    } else if (!/^\d{10}$/.test(formData.contactNo)) {
+      newErrors.contactNo = "Contact must be 10 digits";
+    }
+    
+    if (!formData.instaId.trim()) newErrors.instaId = "Instagram ID is required";
+    
+    if (!formData.youtubeChannel.trim()) {
+      newErrors.youtubeChannel = "YouTube channel is required";
+    }
+    
+    if (!formData.pincode.trim()) {
+      newErrors.pincode = "Pincode is required";
+    } else if (!/^\d{6}$/.test(formData.pincode)) {
+      newErrors.pincode = "Pincode must be 6 digits";
+    }
+    
     if (!formData.category) newErrors.category = "Please select a category";
+    
     return newErrors;
   };
 
   const handleConnectInstagram = () => {
-    localStorage.setItem('influencerFormData', JSON.stringify(formData)); // ✅ Save form data
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('Please login first');
+      navigate('/login');
+      return;
+    }
+
+    // Validate form before Instagram connection
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      toast.warning('Please fill all required fields before connecting Instagram');
+      return;
+    }
+
+    localStorage.setItem('influencerFormData', JSON.stringify(formData));
     window.location.href = "https://micromatch-flask-server.onrender.com/server/login";
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Check authentication
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('Please login first');
+      navigate('/login');
+      return;
+    }
+
+    // Validate form
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
+    // Check Instagram connection
     if (!allowPermission || !access_token || !insta_scoped_id) {
       toast.warning("Please connect Instagram to continue.");
       return;
     }
 
+    setIsLoading(true);
+
     try {
-        const res = await axios.post('https://micromatch-backend.onrender.com/api/influencers/register', {
+      console.log('Submitting data:', {
+        ...formData,
+        access_token: access_token ? 'present' : 'missing',
+        insta_scoped_id: insta_scoped_id ? 'present' : 'missing'
+      });
+
+      const res = await axios.post('https://micromatch-backend.onrender.com/api/influencers/register', {
         ...formData,
         access_token,
         insta_scoped_id
       }, {
         headers: {
-          'x-auth-token': localStorage.getItem('token')
+          'x-auth-token': token,
+          'Content-Type': 'application/json'
         }
       });
 
       if (res.data.success) {
+        // Clear saved form data
+        localStorage.removeItem('influencerFormData');
+        
         if (res.data.isVerified) {
           toast.success("Registration & verification successful!");
           navigate('/influencer-dashboard');
@@ -124,10 +205,44 @@ export default function InfluencerSignIn() {
       }
 
     } catch (err) {
-      console.error(err);
-      toast.error("Sign-Up failed. Please try again.");
+      console.error('Registration error:', err);
+      
+      if (err.response) {
+        // Server responded with error status
+        const status = err.response.status;
+        const message = err.response.data?.message || 'Registration failed';
+        
+        if (status === 400) {
+          toast.error(`Validation Error: ${message}`);
+        } else if (status === 401) {
+          toast.error('Authentication failed. Please login again.');
+          navigate('/login');
+        } else if (status === 500) {
+          toast.error('Server error. Please try again later.');
+        } else {
+          toast.error(message);
+        }
+      } else if (err.request) {
+        // Network error
+        toast.error('Network error. Please check your connection.');
+      } else {
+        toast.error('Registration failed. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12 relative overflow-hidden">
@@ -143,6 +258,7 @@ export default function InfluencerSignIn() {
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* All form fields remain the same */}
             {/* Full Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -156,6 +272,7 @@ export default function InfluencerSignIn() {
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 placeholder="Enter your full name"
+                disabled={isLoading}
               />
               {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
             </div>
@@ -173,6 +290,7 @@ export default function InfluencerSignIn() {
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 placeholder="example@gmail.com"
+                disabled={isLoading}
               />
               {errors.gmail && <p className="mt-1 text-sm text-red-500">{errors.gmail}</p>}
             </div>
@@ -191,6 +309,7 @@ export default function InfluencerSignIn() {
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 placeholder="10-digit contact number"
                 maxLength="10"
+                disabled={isLoading}
               />
               {errors.contactNo && <p className="mt-1 text-sm text-red-500">{errors.contactNo}</p>}
             </div>
@@ -208,6 +327,7 @@ export default function InfluencerSignIn() {
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 placeholder="Your Instagram handle"
+                disabled={isLoading}
               />
               {errors.instaId && <p className="mt-1 text-sm text-red-500">{errors.instaId}</p>}
             </div>
@@ -225,6 +345,7 @@ export default function InfluencerSignIn() {
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 placeholder="URL of your YouTube channel"
+                disabled={isLoading}
               />
               {errors.youtubeChannel && <p className="mt-1 text-sm text-red-500">{errors.youtubeChannel}</p>}
             </div>
@@ -243,6 +364,7 @@ export default function InfluencerSignIn() {
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 placeholder="6-digit pincode"
                 maxLength="6"
+                disabled={isLoading}
               />
               {errors.pincode && <p className="mt-1 text-sm text-red-500">{errors.pincode}</p>}
             </div>
@@ -258,6 +380,7 @@ export default function InfluencerSignIn() {
                 value={formData.category}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                disabled={isLoading}
               >
                 <option value="">Select your category</option>
                 {categories.map((category, index) => (
@@ -274,11 +397,11 @@ export default function InfluencerSignIn() {
               {!allowPermission ? (
                 <button
                   type="button"
-                  style={{ cursor: 'pointer' }}
                   onClick={handleConnectInstagram}
-                  className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-200"
+                  disabled={isLoading}
+                  className="w-full py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white rounded-lg transition duration-200"
                 >
-                  Connect Instagram
+                  {isLoading ? 'Connecting...' : 'Connect Instagram'}
                 </button>
               ) : (
                 <div className="flex items-center text-green-600 font-medium py-2">
@@ -293,14 +416,14 @@ export default function InfluencerSignIn() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={false}
+              disabled={!allowPermission || isLoading}
               className={`w-full py-3 rounded-lg transition duration-200 ${
-                allowPermission
+                allowPermission && !isLoading
                   ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              Sign Up as Influencer
+              {isLoading ? 'Signing Up...' : 'Sign Up as Influencer'}
             </button>
           </form>
         </div>
