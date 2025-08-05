@@ -33,6 +33,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: micromatch  # Replace with your Azure Web App name
+          app-name: 'micromatch-frontend'  # Replace with your Azure Web App name
           publish-profile: ${{ secrets.AZURE_WEBAPP_DEPLOYMENT_TOKEN }}
           package: './client/build'
