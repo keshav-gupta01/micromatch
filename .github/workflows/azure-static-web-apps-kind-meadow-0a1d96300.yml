@@ -1,9 +1,11 @@
-name: Build and deploy client to Azure Web App
+name: Deploy React Frontend to Azure Web App
 
 on:
   push:
     branches:
-      - main  # or your deployment branch
+      - main
+    paths:
+      - 'client/**'  # Trigger only when client folder changes
 
 jobs:
   build-and-deploy:
@@ -15,12 +17,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Node.js 22.x
+        uses: actions/setup-node@v4
         with:
-          node-version: '22' # or the version your app needs
+          node-version: '22.x'
 
       - name: Install dependencies
         run: npm install
@@ -31,6 +33,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: micromatch   # example: creedfrontend
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./client/build
+          app-name: micromatch  # Replace with your Azure Web App name
+          publish-profile: ${{ secrets.AZURE_WEBAPP_DEPLOYMENT_TOKEN }}
+          package: './client/build'
