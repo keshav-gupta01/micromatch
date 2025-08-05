@@ -30,6 +30,11 @@ app.use(cors({
   origin: 'https://micromatch.onrender.com'  // Replace with your actual frontend URL
 }));
 
+// Ckeck API
+app.get("/", (req, res) => {
+  res.send("Backend is running");
+});
+
 // Routes
 app.use('/api/influencers', influencerRoutes);
 app.use('/api/auth', authRoutes);
