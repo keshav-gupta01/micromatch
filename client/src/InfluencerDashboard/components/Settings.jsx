@@ -76,7 +76,7 @@ const Settings = () => {
         throw new Error('Authentication token not found');
       }
 
-      const response = await fetch(`https://micromatch-backend.onrender.com/api/influencers/${influencerId}/change-password`, {
+      const response = await fetch(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/influencers/${influencerId}/change-password`, {
         method: 'POST',
         headers: {
           'x-auth-token': token,

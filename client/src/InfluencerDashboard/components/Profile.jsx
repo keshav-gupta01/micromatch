@@ -67,7 +67,7 @@ const InfluencerProfile = () => {
           throw new Error('Authentication token not found');
         }
 
-        const response = await fetch(`https://micromatch-backend.onrender.com/api/influencers/${influencerId}`, {
+        const response = await fetch(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/influencers/${influencerId}`, {
           headers: {
             'x-auth-token': token,
             'Content-Type': 'application/json'
@@ -152,7 +152,7 @@ const handleSubmit = async (e) => {
       formDataForSubmit.append('profilePicture', formData.profileFile); // <--- key matches multer
     }
 
-    const response = await fetch(`https://micromatch-backend.onrender.com/api/influencers/${influencerId}`, {
+    const response = await fetch(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/influencers/${influencerId}`, {
       method: 'PUT',
       headers: { 'x-auth-token': token }, // don't set Content-Type for FormData
       body: formDataForSubmit,

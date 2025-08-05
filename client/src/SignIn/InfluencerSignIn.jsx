@@ -53,7 +53,7 @@ export default function InfluencerSignIn() {
     if (code) {
       setIsLoading(true);
       axios
-        .get(`https://micromatch-backend.onrender.com/api/influencers/verify-instagram?code=${code}`, {
+        .get(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/influencers/verify-instagram?code=${code}`, {
           headers: {
             'x-auth-token': token
           }
@@ -178,7 +178,7 @@ export default function InfluencerSignIn() {
         insta_scoped_id: insta_scoped_id ? 'present' : 'missing'
       });
 
-      const res = await axios.post('https://micromatch-backend.onrender.com/api/influencers/register', {
+      const res = await axios.post('https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/influencers/register', {
         ...formData,
         access_token,
         insta_scoped_id

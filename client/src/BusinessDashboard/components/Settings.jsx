@@ -66,7 +66,7 @@ const Settings = () => {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('Authentication token not found');
 
-      const response = await fetch(`https://micromatch-backend.onrender.com/api/brands/${brandId}/changepassword`, {
+      const response = await fetch(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/brands/${brandId}/changepassword`, {
         method: 'POST',
         headers: {
           'x-auth-token': token,

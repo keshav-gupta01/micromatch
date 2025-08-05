@@ -37,7 +37,7 @@ const BusinessProfile = () => {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('Authentication token not found');
 
-        const response = await axios.get('https://micromatch-backend.onrender.com/api/brands/getprofile', {
+        const response = await axios.get('https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/brands/getprofile', {
           headers: { 'x-auth-token': token },
         });
 
@@ -107,7 +107,7 @@ const BusinessProfile = () => {
         form.append('brand_logo', formData.logoFile); // backend expects brand_logo
       }
 
-      const response = await axios.post('https://micromatch-backend.onrender.com/api/brands/update', form, {
+      const response = await axios.post('https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/brands/update', form, {
         headers: { 'x-auth-token': token },
       });
 

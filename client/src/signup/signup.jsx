@@ -68,7 +68,7 @@ const SignupPage = () => {
   
     if (Object.keys(validationErrors).length === 0) {
       try {
-        const response = await axios.post('https://micromatch-backend.onrender.com/api/auth/signup', {
+        const response = await axios.post('https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/auth/signup', {
           name: formData.fullName,
           email: formData.email,
           password: formData.password

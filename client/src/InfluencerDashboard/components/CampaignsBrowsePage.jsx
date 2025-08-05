@@ -17,7 +17,7 @@ const CampaignsBrowsePage = () => {
   const fetchEligibleCampaigns = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`https://micromatch-backend.onrender.com/api/influencers/${influencerId}/campaigns/eligible`, {
+      const response = await fetch(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/influencers/${influencerId}/campaigns/eligible`, {
         headers: {
           'x-auth-token': token,
           'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ const CampaignsBrowsePage = () => {
   const fetchAcceptedCampaigns = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`https://micromatch-backend.onrender.com/api/influencers/${influencerId}/campaigns/accepted`, {
+      const response = await fetch(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/influencers/${influencerId}/campaigns/accepted`, {
         headers: {
           'x-auth-token': token,
           'Content-Type': 'application/json'
@@ -61,7 +61,7 @@ const CampaignsBrowsePage = () => {
   const handleAcceptCampaign = async (campaignId) => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`https://micromatch-backend.onrender.com/api/influencers/${influencerId}/campaigns/${campaignId}/accept`, {
+      const response = await fetch(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/influencers/${influencerId}/campaigns/${campaignId}/accept`, {
         method: 'POST',
         headers: {
           'x-auth-token': token,
@@ -91,7 +91,7 @@ const CampaignsBrowsePage = () => {
   const handleSubmitStory = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`https://micromatch-backend.onrender.com/api/influencers/${influencerId}/campaigns/${submitModal.campaignId}/submit`, {
+      const response = await fetch(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/influencers/${influencerId}/campaigns/${submitModal.campaignId}/submit`, {
         method: 'POST',
         headers: {
           'x-auth-token': token,

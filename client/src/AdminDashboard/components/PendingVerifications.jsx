@@ -9,7 +9,7 @@ function PendingVerifications() {
   const fetchPendingBrands = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('https://micromatch-backend.onrender.com/api/brands/pending', {
+      const res = await axios.get('https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/brands/pending', {
         headers: {
           'x-auth-token': token,
         }
@@ -26,7 +26,7 @@ function PendingVerifications() {
   const handleApprove = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`https://micromatch-backend.onrender.com/api/brands/approve/${id}`, {}, {
+      await axios.put(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/brands/approve/${id}`, {}, {
         headers: { 'x-auth-token': token },
       });
       setBrands((prev) => prev.filter((brand) => brand._id !== id));
@@ -38,7 +38,7 @@ function PendingVerifications() {
   const handleReject = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`https://micromatch-backend.onrender.com/api/brands/reject/${id}`, {
+      await axios.delete(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/brands/reject/${id}`, {
         headers: {'x-auth-token': token},
       });
       setBrands((prev) => prev.filter((brand) => brand._id !== id));

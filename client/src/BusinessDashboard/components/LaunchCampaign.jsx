@@ -242,7 +242,7 @@ const LaunchCampaign = () => {
       
       // Make API call
       const response = await axios.post(
-        'https://micromatch-backend.onrender.com/api/brands/launchCampaign',
+        'https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/brands/launchCampaign',
         formDataForSubmit,
         {
           headers: {

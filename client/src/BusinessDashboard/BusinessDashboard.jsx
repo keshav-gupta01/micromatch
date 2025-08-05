@@ -28,7 +28,7 @@ const BusinessDashboard = () => {
           return;
         }
 
-       const res = await axios.get('https://micromatch-backend.onrender.com/api/brands/getprofile', {
+       const res = await axios.get('https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/brands/getprofile', {
           headers: { 'x-auth-token': token },
         });
 
