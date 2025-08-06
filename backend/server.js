@@ -24,6 +24,7 @@ const app = express();
 
 const allowedOrigins = [
   'https://kind-meadow-0a1d96300.1.azurestaticapps.net',
+  'https://micromatch.onrender.com',
   'http://localhost:5173'
 ];
 
