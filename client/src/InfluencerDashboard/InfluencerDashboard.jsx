@@ -47,7 +47,7 @@ const InfluencerDashboard = () => {
           return;
         }
 
-        const response = await fetch(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/influencers/${influencerId}`, {
+        const response = await fetch(`https://micromatch-backend.onrender.com/api/influencers/${influencerId}`, {
           headers: {
             'x-auth-token': token,
             'Content-Type': 'application/json'

@@ -48,7 +48,7 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await fetch('https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/auth/login', {
+      const response = await fetch('https://micromatch-backend.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ const LoginPage = () => {
         // If user is an influencer, fetch and store influencer ID
         if (role === 'influencer') {
           try {
-            const influencerResponse = await fetch(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/influencers/by-user/${userId}`, {
+            const influencerResponse = await fetch(`https://micromatch-backend.onrender.com/api/influencers/by-user/${userId}`, {
               headers: {
                 'x-auth-token': data.token,
                 'Content-Type': 'application/json'
@@ -89,7 +89,7 @@ const LoginPage = () => {
         }
         else if (role === 'brand') {
           try {
-            const brandResponse = await fetch(`https://micromatch-backend-gpchh5eudjfmdqa2.centralindia-01.azurewebsites.net/api/brands/by-user/${userId}`, {
+            const brandResponse = await fetch(`https://micromatch-backend.onrender.com/api/brands/by-user/${userId}`, {
               headers: {
                 'x-auth-token': data.token,
                 'Content-Type': 'application/json'
