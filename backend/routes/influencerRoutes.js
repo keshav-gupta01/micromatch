@@ -19,8 +19,8 @@ const { upload } = require('../config/cloudinary');
 const influencerOnly = require('../middleware/influencerMiddleware');
 
 // Public routes
-router.get('/verify-instagram', verifyInstagram);
-router.post('/register', registerInfluencer);
+router.get('/verify-instagram',auth, verifyInstagram);
+router.post('/register', auth, registerInfluencer);
 
 // Protected routes - require authentication
 router.get('/by-user/:userId', auth, getInfluencerByUserId); // New route to get influencer by user ID

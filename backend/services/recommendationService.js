@@ -163,7 +163,7 @@ exports.sendCampaignInvitation = async (influencerId, campaignId) => {
           <p>Login to your MicroMatch dashboard to view complete details and accept this campaign.</p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.FRONTEND_URL || 'https://micromatch.onrender.com/'}/influencer-dashboard" 
+            <a href="${process.env.FRONTEND_URL || 'https://kind-meadow-0a1d96300.1.azurestaticapps.net/'}/influencer-dashboard" 
                style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
                View Campaign
             </a>
@@ -218,7 +218,7 @@ exports.verifyInfluencer = async (influencerId) => {
     // Call external API to verify if influencer is fake
     const apiUrl = process.env.VERIFICATION_API_URL || 'https://micromatch-flask-server.onrender.com/server/is_fake_influencer';
     const response = await axios.post(apiUrl, {
-      accessToken: influencer.access_token
+      access_token: influencer.access_token
     }, {
       timeout: 30000
     });

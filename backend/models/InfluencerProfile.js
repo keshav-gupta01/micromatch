@@ -14,7 +14,7 @@ const InfluencerSchema = new mongoose.Schema(
     access_token: { type: String, required: true }, // Changed from accessToken
     insta_scoped_id: { type: String, required: true }, // Changed from instagramId
     verified: { type: Boolean, default: false },
-    verified_status: { type: String, default: "Verification will be started, we will update you when it is done" }, // Fixed typo
+    verified_status: { type: String}, // Fixed typo
     profilePicture: { type: String }, // Added for profile picture URL
     bio: { type: String }, // Added for bio
     // Campaign tracking fields
